@@ -1,0 +1,3400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JCA NY — iOS App Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #a8202c;
+    --crimson-deep: #7a1620;
+    --crimson-soft: #c84252;
+    --gold: #c9a961;
+    --gold-light: #e3c889;
+    --gold-deep: #8c6f30;
+    --cream: #faf6ef;
+    --cream-warm: #f4ecdd;
+    --paper: #ffffff;
+    --ink: #1c1410;
+    --ink-soft: #4a3d35;
+    --muted: #8a7864;
+    --border: rgba(28, 20, 16, 0.08);
+    --border-warm: rgba(168, 32, 44, 0.12);
+    --shadow-sm: 0 1px 2px rgba(28, 20, 16, 0.04), 0 1px 3px rgba(28, 20, 16, 0.06);
+    --shadow-md: 0 4px 12px rgba(28, 20, 16, 0.08), 0 2px 4px rgba(28, 20, 16, 0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse at 20% 0%, #2a1a18 0%, #14090a 40%, #08040a 100%);
+    min-height: 100vh;
+    padding: 60px 30px 80px;
+    color: var(--ink);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(201, 169, 97, 0.06) 0%, transparent 35%),
+      radial-gradient(circle at 85% 70%, rgba(168, 32, 44, 0.08) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .page-header {
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .page-header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 48px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  .page-header h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-light);
+  }
+  .page-header .sub {
+    margin-top: 14px;
+    font-size: 13px;
+    color: rgba(250, 246, 239, 0.5);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .page-header .ornament {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin: 22px 0 0;
+  }
+  .page-header .ornament .line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .page-header .ornament .line.r {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .page-header .ornament .diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .section-title {
+    color: var(--cream);
+    text-align: center;
+    margin: 80px 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-title .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold-light);
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+  }
+  .section-title h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 28px;
+    margin-top: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .phone-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px 40px;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phone-wrap {
+    position: relative;
+    width: 320px;
+  }
+  .phone-wrap .label {
+    text-align: center;
+    color: var(--gold-light);
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    font-style: italic;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+    opacity: 0.85;
+  }
+  .phone-wrap .label::before { content: '— '; }
+  .phone-wrap .label::after { content: ' —'; }
+
+  .phone {
+    width: 320px;
+    height: 690px;
+    background: var(--cream);
+    border-radius: 48px;
+    box-shadow:
+      0 0 0 2px #2a1a18,
+      0 0 0 12px #14090a,
+      0 0 0 13px #2a1a18,
+      0 50px 90px rgba(0, 0, 0, 0.7),
+      0 25px 50px rgba(168, 32, 44, 0.12);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic Island */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 34px;
+    background: #050203;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 54px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 28px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+    z-index: 50;
+    position: relative;
+    font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .status-bar.dark { color: var(--cream); }
+  .status-bar .icons { display: flex; gap: 6px; align-items: center; }
+  .status-bar svg { width: 16px; height: 11px; }
+
+  .screen {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .scrollable::-webkit-scrollbar { display: none; }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(28, 20, 16, 0.35);
+    border-radius: 3px;
+    z-index: 200;
+  }
+  .home-indicator.light { background: rgba(255, 255, 255, 0.5); }
+
+  /* iOS Tab Bar */
+  .tabbar {
+    height: 84px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    padding: 8px 0 28px;
+    flex-shrink: 0;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #8e8e93;
+  }
+  .tab svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .tab.active { color: var(--crimson); }
+  .tab.active svg { stroke-width: 2; }
+
+  /* ============ SPLASH / WELCOME ============ */
+  .splash {
+    height: 100%;
+    background:
+      radial-gradient(ellipse at top, #b82834 0%, var(--crimson) 40%, var(--crimson-deep) 100%);
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 36px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 30%, rgba(201, 169, 97, 0.18) 0%, transparent 50%);
+  }
+  .splash-mandala {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 460px;
+    height: 460px;
+    opacity: 0.08;
+    animation: spin 90s linear infinite;
+  }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  .swastika {
+    width: 86px;
+    height: 86px;
+    margin-top: 30px;
+    position: relative;
+    z-index: 2;
+  }
+  .swastika svg { width: 100%; height: 100%; }
+
+  .splash h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 36px;
+    margin-top: 24px;
+    letter-spacing: -0.02em;
+    z-index: 2;
+    text-align: center;
+    line-height: 1.05;
+  }
+  .splash h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-light);
+    display: block;
+    font-size: 18px;
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+  .splash .navkar {
+    z-index: 2;
+    text-align: center;
+    margin-top: 28px;
+    padding: 22px 18px;
+    border-top: 1px solid rgba(201, 169, 97, 0.3);
+    border-bottom: 1px solid rgba(201, 169, 97, 0.3);
+  }
+  .splash .navkar .line {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(250, 246, 239, 0.92);
+  }
+  .splash .navkar .label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+  .splash-cta {
+    z-index: 2;
+    width: 100%;
+    margin-top: auto;
+  }
+  .btn-light {
+    width: 100%;
+    padding: 17px;
+    background: var(--cream);
+    color: var(--crimson);
+    border: none;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  }
+  .btn-ghost {
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    background: transparent;
+    color: var(--cream);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  /* ============ LOGIN ============ */
+  .login {
+    height: 100%;
+    background: var(--cream);
+    padding: 16px 28px 28px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-back {
+    color: var(--crimson);
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+  .login h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 34px;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .login h2 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--crimson);
+  }
+  .login .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .login form {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .ios-field {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
+    border: 0.5px solid var(--border);
+  }
+  .ios-field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .ios-field input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+    outline: none;
+  }
+  .forgot {
+    text-align: right;
+    color: var(--crimson);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--crimson);
+    color: var(--cream);
+    border: none;
+    border-radius: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 8px;
+    box-shadow: 0 8px 20px rgba(168, 32, 44, 0.25);
+  }
+  .or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .or .line { flex: 1; height: 0.5px; background: var(--border); }
+  .social {
+    display: flex;
+    gap: 10px;
+  }
+  .social button {
+    flex: 1;
+    padding: 13px;
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .login .signup {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: auto;
+    padding-top: 20px;
+  }
+  .login .signup a {
+    color: var(--crimson);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* ============ HOME ============ */
+  .home-bg { background: var(--cream); height: 100%; display: flex; flex-direction: column; }
+  .home-hero {
+    background:
+      linear-gradient(180deg, var(--cream) 0%, transparent 100%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><g fill="none" stroke="%23a8202c" stroke-width="0.4" opacity="0.3"><circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="70"/><circle cx="100" cy="100" r="50"/><circle cx="100" cy="100" r="30"/></g></svg>');
+    background-position: center, right -60px top -40px;
+    background-repeat: no-repeat;
+    background-size: auto, 280px;
+    padding: 8px 24px 16px;
+  }
+  .home-greeting {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .home-greeting .text .hi {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .home-greeting .text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    color: var(--ink);
+    margin-top: 2px;
+    letter-spacing: -0.01em;
+  }
+  .home-greeting .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-deep));
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(168, 32, 44, 0.3);
+  }
+
+  .panchang {
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 16px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  .panchang::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--crimson), var(--gold));
+  }
+  .panchang .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .panchang .date {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .panchang .tithi {
+    font-size: 11px;
+    color: var(--crimson);
+    background: rgba(168, 32, 44, 0.08);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .panchang .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--border);
+  }
+  .panchang .cell .lbl {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .panchang .cell .val {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .section-h {
+    padding: 0 24px;
+    margin: 22px 0 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .section-h h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-h .more {
+    font-size: 13px;
+    color: var(--crimson);
+    font-weight: 500;
+  }
+
+  .quick-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 0 24px 8px;
+    overflow-x: auto;
+  }
+  .quick-scroll::-webkit-scrollbar { display: none; }
+  .quick-card {
+    min-width: 130px;
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 14px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .quick-card .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(168, 32, 44, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+    margin-bottom: 10px;
+  }
+  .quick-card.gold .icon { background: rgba(201, 169, 97, 0.15); color: var(--gold-deep); }
+  .quick-card .name {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .quick-card .meta {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .events-list { padding: 0 24px; }
+  .event-card {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    gap: 14px;
+  }
+  .event-card .date-block {
+    width: 52px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(168, 32, 44, 0.06), rgba(168, 32, 44, 0.02));
+    border-radius: 12px;
+    padding: 8px 0;
+    border: 0.5px solid var(--border-warm);
+    flex-shrink: 0;
+  }
+  .event-card .date-block .month {
+    font-size: 9px;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+  .event-card .date-block .day {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .event-card .info { flex: 1; min-width: 0; }
+  .event-card .info .title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .event-card .info .desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .event-card .info .meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--ink-soft);
+  }
+  .event-card .info .meta span { display: flex; align-items: center; gap: 3px; }
+
+  /* ============ LIVE DARSHAN ============ */
+  .darshan-bg { background: #08040a; height: 100%; display: flex; flex-direction: column; color: var(--cream); }
+  .darshan-header {
+    padding: 4px 24px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .darshan-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .live-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(220, 38, 38, 0.15);
+    border: 0.5px solid rgba(220, 38, 38, 0.3);
+    padding: 5px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #f87171;
+  }
+  .live-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+
+  .featured-stream {
+    margin: 0 24px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/10;
+    background:
+      radial-gradient(ellipse at center, #6b1018 0%, #2a0508 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .featured-stream::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 65%, rgba(201, 169, 97, 0.4) 0%, transparent 35%);
+  }
+  .featured-stream .deity-glow {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 60%, var(--gold-deep) 100%);
+    clip-path: polygon(50% 0%, 70% 30%, 70% 90%, 30% 90%, 30% 30%);
+    opacity: 0.85;
+    filter: blur(0.5px);
+    box-shadow: 0 0 60px rgba(201, 169, 97, 0.6);
+    z-index: 2;
+  }
+  .featured-stream .info {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    right: 14px;
+    z-index: 3;
+  }
+  .featured-stream .name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .featured-stream .viewers {
+    font-size: 10px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .stream-grid {
+    padding: 16px 24px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .stream-tile {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2a0508, #4a0a14);
+    position: relative;
+    overflow: hidden;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border: 0.5px solid rgba(201, 169, 97, 0.15);
+  }
+  .stream-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(201, 169, 97, 0.3) 0%, transparent 50%);
+  }
+  .stream-tile.dada::before {
+    background: radial-gradient(circle at 50% 40%, rgba(255, 200, 100, 0.25), transparent 50%);
+  }
+  .stream-tile .nm {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 2;
+  }
+  .stream-tile .st {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-top: 1px;
+    z-index: 2;
+  }
+  .stream-tile .live {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ef4444;
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    z-index: 2;
+  }
+
+  .schedule {
+    margin: 18px 24px 0;
+    padding: 16px;
+    background: rgba(201, 169, 97, 0.06);
+    border: 0.5px solid rgba(201, 169, 97, 0.18);
+    border-radius: 14px;
+  }
+  .schedule .ttl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .sched-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 12px;
+    border-bottom: 0.5px solid rgba(201, 169, 97, 0.1);
+  }
+  .sched-row:last-child { border-bottom: none; }
+  .sched-row .label { opacity: 0.8; }
+  .sched-row .time {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+
+  /* ============ CALENDAR ============ */
+  .cal-bg { background: var(--cream); height: 100%; }
+  .cal-header {
+    padding: 0 24px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cal-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .cal-month-row {
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cal-month-row .month {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .cal-arrows { display: flex; gap: 16px; color: var(--crimson); }
+  .calendar {
+    margin: 0 24px;
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 16px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .cal-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    padding-bottom: 8px;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    border-radius: 8px;
+    position: relative;
+  }
+  .cal-day.faded { color: var(--muted); opacity: 0.4; }
+  .cal-day.today {
+    background: var(--crimson);
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .cal-day.parva {
+    color: var(--crimson);
+    font-weight: 700;
+  }
+  .cal-day.parva::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4px;
+  }
+
+  .upcoming-parva {
+    padding: 18px 24px 0;
+  }
+  .upcoming-parva .title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .parva-card {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .parva-card .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(201, 169, 97, 0.2), rgba(168, 32, 44, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .parva-card .info { flex: 1; }
+  .parva-card .info .name {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .parva-card .info .date {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .parva-card .days {
+    text-align: right;
+  }
+  .parva-card .days .num {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--crimson);
+  }
+  .parva-card .days .lbl {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* ============ DONATION ============ */
+  .donate-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .donate-header {
+    padding: 0 24px 16px;
+  }
+  .donate-header .h {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.05;
+  }
+  .donate-header .h em { font-style: italic; color: var(--crimson); font-weight: 400; }
+  .donate-header .sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .donate-stats {
+    margin: 18px 24px;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-deep));
+    border-radius: 18px;
+    padding: 18px 20px;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(168, 32, 44, 0.25);
+  }
+  .donate-stats::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 140px;
+    height: 140px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.25;
+  }
+  .donate-stats::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+  .donate-stats .lbl {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .donate-stats .amt {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 500;
+    margin-top: 4px;
+    letter-spacing: -0.01em;
+  }
+  .donate-stats .amt em { font-style: italic; font-weight: 300; opacity: 0.85; font-size: 18px; }
+  .donate-stats .progress {
+    margin-top: 14px;
+    height: 4px;
+    background: rgba(201, 169, 97, 0.25);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .donate-stats .progress .fill {
+    height: 100%;
+    width: 68%;
+    background: linear-gradient(90deg, var(--gold-light), var(--gold));
+    border-radius: 100px;
+  }
+  .donate-stats .footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  .donate-categories {
+    padding: 0 24px;
+  }
+  .cat-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .cat-card {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .cat-card.featured {
+    border-color: var(--crimson);
+    background: linear-gradient(135deg, rgba(168, 32, 44, 0.04), var(--paper));
+  }
+  .cat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(168, 32, 44, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+    flex-shrink: 0;
+  }
+  .cat-card.gold .cat-icon { background: rgba(201, 169, 97, 0.18); color: var(--gold-deep); }
+  .cat-info { flex: 1; min-width: 0; }
+  .cat-info .nm {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cat-info .ds {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+    line-height: 1.4;
+  }
+  .cat-arrow { color: var(--muted); }
+
+  /* ============ BHOJANSHALA ============ */
+  .bhoj-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .bhoj-hero {
+    margin: 0 24px;
+    background: linear-gradient(135deg, #f4ecdd, #e8d4a8);
+    border-radius: 20px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bhoj-hero::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(168, 32, 44, 0.1), transparent 70%);
+    border-radius: 50%;
+  }
+  .bhoj-hero .tag {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--crimson);
+    background: rgba(168, 32, 44, 0.1);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .bhoj-hero h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-top: 10px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .bhoj-hero h2 em { font-style: italic; color: var(--crimson); }
+  .bhoj-hero p {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    line-height: 1.5;
+    max-width: 220px;
+  }
+
+  .bhoj-section {
+    padding: 20px 24px 0;
+  }
+  .bhoj-section .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .meal-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .meal-card {
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .meal-card.selected {
+    border: 1.5px solid var(--crimson);
+    background: rgba(168, 32, 44, 0.03);
+  }
+  .meal-card .icon { font-size: 22px; }
+  .meal-card .nm {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .meal-card .price {
+    font-size: 11px;
+    color: var(--crimson);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .date-picker {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-top: 8px;
+  }
+  .date-picker .lbl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .date-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .date-row::-webkit-scrollbar { display: none; }
+  .date-pill {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--cream-warm);
+    text-align: center;
+    border: 0.5px solid var(--border);
+  }
+  .date-pill.selected {
+    background: var(--crimson);
+    color: var(--cream);
+    border-color: var(--crimson);
+  }
+  .date-pill .d {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+  .date-pill .num {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .bhoj-cta {
+    margin: 16px 24px 0;
+  }
+
+  /* ============ EVENTS DETAIL ============ */
+  .event-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .event-cover {
+    margin: 0 24px;
+    height: 180px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-deep));
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 18px;
+  }
+  .event-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(201, 169, 97, 0.3), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(201, 169, 97, 0.2), transparent 50%);
+  }
+  .event-cover .swastika-mini {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    opacity: 0.5;
+  }
+  .event-cover .info { color: var(--cream); z-index: 2; }
+  .event-cover .tag {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  .event-cover h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 4px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .event-meta {
+    margin: 16px 24px;
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-row .ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(168, 32, 44, 0.08);
+    color: var(--crimson);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .meta-row .text { flex: 1; min-width: 0; }
+  .meta-row .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+  .meta-row .val { font-size: 13px; color: var(--ink); font-weight: 500; margin-top: 1px; }
+
+  .event-desc {
+    padding: 0 24px;
+  }
+  .event-desc .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .event-desc p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .rsvp-bar {
+    margin: 20px 24px 0;
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 14px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .rsvp-bar .att {
+    flex: 1;
+  }
+  .rsvp-bar .att .num {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .rsvp-bar .att .lbl {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .rsvp-bar button {
+    background: var(--crimson);
+    color: var(--cream);
+    border: none;
+    padding: 11px 22px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(168, 32, 44, 0.25);
+  }
+
+  /* ============ PATHSHALA ============ */
+  .path-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .path-header { padding: 0 24px 12px; }
+  .path-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .path-header h2 em { font-style: italic; color: var(--crimson); }
+  .path-header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .level-tabs {
+    margin: 14px 24px 0;
+    background: var(--cream-warm);
+    border-radius: 100px;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+  }
+  .level-tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 100px;
+    color: var(--muted);
+  }
+  .level-tab.active {
+    background: var(--paper);
+    color: var(--crimson);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .lesson-card {
+    margin: 16px 24px 0;
+    background: var(--paper);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .lesson-cover {
+    height: 110px;
+    background: linear-gradient(135deg, #c9a961, #8c6f30);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lesson-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 60%);
+  }
+  .lesson-cover .play {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+    z-index: 2;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  .lesson-info { padding: 14px; }
+  .lesson-info .num {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--crimson);
+    font-weight: 700;
+  }
+  .lesson-info .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 2px;
+    letter-spacing: -0.01em;
+  }
+  .lesson-info .meta {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .lesson-info .meta span { display: flex; align-items: center; gap: 4px; }
+  .lesson-info .progress {
+    margin-top: 12px;
+    height: 5px;
+    background: rgba(168, 32, 44, 0.1);
+    border-radius: 100px;
+  }
+  .lesson-info .progress .fill {
+    height: 100%;
+    width: 60%;
+    background: var(--crimson);
+    border-radius: 100px;
+  }
+  .lesson-info .pct {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .schedule-section {
+    padding: 18px 24px 0;
+  }
+  .schedule-section .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .class-row {
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .class-row .day-block {
+    width: 44px;
+    text-align: center;
+    background: rgba(168, 32, 44, 0.08);
+    border-radius: 8px;
+    padding: 6px 0;
+    flex-shrink: 0;
+  }
+  .class-row .day-block .d {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--crimson);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .class-row .day-block .n {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .class-row .info { flex: 1; }
+  .class-row .info .nm {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .class-row .info .tm { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  /* ============ PROFILE ============ */
+  .prof-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .prof-header {
+    background: linear-gradient(165deg, var(--crimson) 0%, var(--crimson-deep) 100%);
+    margin: 0 24px;
+    border-radius: 24px;
+    padding: 24px;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 14px 32px rgba(168, 32, 44, 0.25);
+  }
+  .prof-header::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.25;
+  }
+  .prof-header::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+  .prof-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--crimson-deep);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    position: relative;
+  }
+  .prof-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 12px;
+    z-index: 2;
+    position: relative;
+  }
+  .prof-header .id {
+    font-size: 11px;
+    opacity: 0.8;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    z-index: 2;
+    position: relative;
+  }
+  .prof-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    z-index: 2;
+    position: relative;
+  }
+  .prof-stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .prof-stat .lbl {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-weight: 600;
+  }
+
+  .prof-section {
+    padding: 18px 24px 0;
+  }
+  .prof-section .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .prof-section .ttl .add {
+    font-size: 12px;
+    color: var(--crimson);
+    font-weight: 500;
+  }
+
+  .family-list {
+    background: var(--paper);
+    border-radius: 14px;
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .family-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .family-row:last-child { border-bottom: none; }
+  .family-av {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(168, 32, 44, 0.15), rgba(201, 169, 97, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--crimson);
+    flex-shrink: 0;
+  }
+  .family-row .info { flex: 1; }
+  .family-row .info .nm {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .family-row .info .rel {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 1px;
+    font-weight: 600;
+  }
+  .family-row .arr { color: var(--muted); }
+
+  .prof-list {
+    background: var(--paper);
+    border-radius: 14px;
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .prof-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .prof-item:last-child { border-bottom: none; }
+  .prof-item .ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(168, 32, 44, 0.08);
+    color: var(--crimson);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .prof-item .nm {
+    flex: 1;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .prof-item .arr { color: var(--muted); }
+
+  /* ============ VIRTUAL TOUR ============ */
+  .tour-bg { background: #08040a; height: 100%; color: var(--cream); padding-bottom: 20px; }
+  .tour-header { padding: 0 24px 14px; }
+  .tour-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .tour-header h2 em { font-style: italic; color: var(--gold-light); }
+  .tour-header p {
+    font-size: 12px;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  .tour-feature {
+    margin: 0 24px;
+    border-radius: 18px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    position: relative;
+    background:
+      linear-gradient(180deg, transparent 50%, rgba(8, 4, 10, 0.95) 100%),
+      radial-gradient(ellipse at center, #6b1018, #2a0508 70%);
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+  .tour-feature::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 60%, rgba(201, 169, 97, 0.5), transparent 35%);
+  }
+  .tour-feature .arches {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 220px;
+  }
+  .tour-feature .arches::before, .tour-feature .arches::after {
+    content: '';
+    position: absolute;
+    border: 1.5px solid rgba(201, 169, 97, 0.5);
+    border-bottom: none;
+  }
+  .tour-feature .arches::before {
+    inset: 0;
+    border-radius: 100px 100px 0 0;
+  }
+  .tour-feature .arches::after {
+    inset: 30px 30px 0;
+    border-radius: 80px 80px 0 0;
+  }
+  .tour-feature .info { z-index: 3; position: relative; }
+  .tour-feature .tag {
+    display: inline-block;
+    font-size: 9px;
+    background: rgba(201, 169, 97, 0.18);
+    border: 0.5px solid rgba(201, 169, 97, 0.4);
+    color: var(--gold-light);
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .tour-feature h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 8px;
+    letter-spacing: -0.01em;
+  }
+  .tour-feature .deity {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .tour-feature .start {
+    margin-top: 14px;
+    background: var(--cream);
+    color: var(--crimson-deep);
+    padding: 12px 22px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tour-list {
+    padding: 16px 24px 0;
+  }
+  .tour-list .ttl {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-light);
+    opacity: 0.8;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .tour-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(201, 169, 97, 0.12);
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .tour-row .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold);
+    width: 22px;
+  }
+  .tour-row .nm {
+    flex: 1;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .tour-row .nm small { display: block; font-size: 10px; opacity: 0.5; font-family: 'Inter', sans-serif; font-style: normal; margin-top: 1px; font-weight: 400; }
+  .tour-row .arr { color: rgba(201, 169, 97, 0.5); }
+
+  /* ============ NEWSLETTER / NEWS ============ */
+  .news-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .news-header {
+    padding: 0 24px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .news-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .news-header .filter {
+    width: 36px;
+    height: 36px;
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+  }
+
+  .news-pills {
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 14px;
+  }
+  .news-pills::-webkit-scrollbar { display: none; }
+  .news-pill {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .news-pill.active {
+    background: var(--crimson);
+    color: var(--cream);
+    border-color: var(--crimson);
+  }
+
+  .news-feature {
+    margin: 0 24px 12px;
+    background: var(--paper);
+    border-radius: 18px;
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .news-feature .img {
+    height: 130px;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-deep));
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .news-feature .img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(201, 169, 97, 0.3), transparent 60%);
+  }
+  .news-feature .img .deity-glow {
+    width: 56px;
+    height: 76px;
+    background: linear-gradient(180deg, var(--gold-light), var(--gold-deep));
+    clip-path: polygon(50% 0%, 70% 30%, 70% 90%, 30% 90%, 30% 30%);
+    box-shadow: 0 0 40px rgba(201, 169, 97, 0.5);
+    z-index: 2;
+  }
+  .news-feature .img .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--crimson);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 3;
+  }
+  .news-feature .body { padding: 14px; }
+  .news-feature .date {
+    font-size: 10px;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+  .news-feature h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .news-feature p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .news-row {
+    margin: 0 24px 8px;
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 12px;
+    border: 0.5px solid var(--border);
+    display: flex;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .news-row .thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(168, 32, 44, 0.15), rgba(201, 169, 97, 0.15));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crimson);
+    font-size: 20px;
+  }
+  .news-row .info { flex: 1; min-width: 0; }
+  .news-row .info .dt {
+    font-size: 9px;
+    color: var(--crimson);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .news-row .info h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  /* ============ PAYMENT ============ */
+  .pay-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .pay-head { padding: 0 24px 16px; }
+  .pay-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .pay-head h2 em { font-style: italic; color: var(--crimson); }
+
+  .pay-amount {
+    margin: 0 24px 18px;
+    background: linear-gradient(135deg, var(--crimson), var(--crimson-deep));
+    border-radius: 18px;
+    padding: 20px;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(168, 32, 44, 0.25);
+  }
+  .pay-amount::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 140px;
+    height: 140px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.25;
+  }
+  .pay-amount .lbl {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .pay-amount .cause {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 2px;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+  }
+  .pay-amount .val {
+    font-family: 'Fraunces', serif;
+    font-size: 38px;
+    font-weight: 500;
+    margin-top: 8px;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 2;
+  }
+  .pay-amount .val em { font-style: italic; font-weight: 300; opacity: 0.6; font-size: 20px; margin-left: 4px; }
+
+  .pay-section {
+    padding: 0 24px;
+    margin-bottom: 16px;
+  }
+  .pay-section .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .method {
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .method.selected {
+    border: 1.5px solid var(--crimson);
+    background: rgba(168, 32, 44, 0.03);
+  }
+  .method.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    background: var(--crimson);
+    color: var(--cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .method .logo {
+    width: 34px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+  }
+  .method .logo.visa { background: linear-gradient(135deg, #1a1f71, #0f145a); }
+  .method .logo.mc { background: linear-gradient(135deg, #eb001b, #f79e1b); }
+  .method .logo.amex { background: linear-gradient(135deg, #2e77bb, #1d5a94); }
+  .method .logo.pp { background: linear-gradient(135deg, #003087, #009cde); }
+  .method .logo.gp { background: linear-gradient(135deg, #4285f4, #34a853); }
+  .method .logo.ap { background: #000; color: white; font-size: 13px; }
+  .method .logo.zl { background: linear-gradient(135deg, #6d1ed4, #4a0fa8); }
+  .method .logo.ach { background: linear-gradient(135deg, #475569, #1e293b); }
+  .method .nm {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .card-preview {
+    margin: 0 24px 16px;
+    aspect-ratio: 1.586 / 1;
+    border-radius: 16px;
+    background:
+      linear-gradient(135deg, #1a0a0f 0%, var(--crimson-deep) 50%, var(--crimson) 100%);
+    padding: 18px;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 14px 30px rgba(168, 32, 44, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-preview::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.3), transparent 60%);
+    border-radius: 50%;
+  }
+  .card-preview::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 160px;
+    height: 160px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    border-radius: 50%;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 2;
+  }
+  .card-chip {
+    width: 38px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-deep));
+    border-radius: 5px;
+    position: relative;
+  }
+  .card-chip::before, .card-chip::after {
+    content: '';
+    position: absolute;
+    background: rgba(0,0,0,0.15);
+  }
+  .card-chip::before {
+    top: 6px; left: 4px; right: 4px; height: 1px;
+  }
+  .card-chip::after {
+    top: 12px; left: 4px; right: 4px; height: 1px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+  }
+  .card-brand {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+  }
+  .card-number {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+    z-index: 2;
+  }
+  .card-bot {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 2;
+    font-size: 9px;
+  }
+  .card-bot .lbl {
+    opacity: 0.6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .card-bot .val {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-field {
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .form-field label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .form-field input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    outline: none;
+  }
+
+  .save-toggle {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 2px;
+  }
+  .save-toggle .switch {
+    width: 34px;
+    height: 20px;
+    background: var(--crimson);
+    border-radius: 100px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .save-toggle .switch::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    right: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .save-toggle .text {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .save-toggle .text strong {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .pay-btn {
+    margin: 16px 24px 0;
+    width: calc(100% - 48px);
+    padding: 16px;
+    background: var(--crimson);
+    color: var(--cream);
+    border: none;
+    border-radius: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 24px rgba(168, 32, 44, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .pay-btn svg { width: 16px; height: 16px; }
+  .secure-note {
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  /* ============ VOLUNTEER / COMMUNITY ============ */
+  .vol-bg { background: var(--cream); height: 100%; padding-bottom: 20px; }
+  .vol-header { padding: 0 24px 14px; }
+  .vol-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .vol-header h2 em { font-style: italic; color: var(--crimson); }
+  .vol-header p { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+  .impact-banner {
+    margin: 0 24px;
+    padding: 18px;
+    background: linear-gradient(135deg, #f4ecdd, #e8d4a8);
+    border-radius: 18px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .impact-banner .num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--crimson);
+    line-height: 1;
+  }
+  .impact-banner .text {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .impact-banner .text strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .opp-grid { padding: 16px 24px 0; }
+  .opp-card {
+    background: var(--paper);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .opp-card .top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .opp-card .ic {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: rgba(168, 32, 44, 0.08);
+    color: var(--crimson);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .opp-card .info { flex: 1; }
+  .opp-card .info .nm {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .opp-card .info .ds {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .opp-card .urgent {
+    font-size: 9px;
+    color: var(--crimson);
+    background: rgba(168, 32, 44, 0.1);
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .opp-card .bottom {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .opp-card .when {
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .opp-card .signup {
+    font-size: 12px;
+    color: var(--crimson);
+    font-weight: 600;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="eyebrow">Concept · iOS Application</div>
+  <h1>Jain Center<br><em>of America</em></h1>
+  <div class="ornament"><div class="line"></div><div class="diamond"></div><div class="line r"></div></div>
+  <p class="sub">A complete mobile companion for the JCA NY community — darshan, donations, Pathshala, Bhojanshala sponsorship, events, and the five sacred shrines.</p>
+</div>
+
+<!-- ====================== SECTION 1: ENTRY & HOME ====================== -->
+<div class="section-title">
+  <div class="num">i.</div>
+  <h2>Onboarding & Home</h2>
+</div>
+
+<div class="phone-grid">
+
+  <!-- ===== SPLASH ===== -->
+  <div class="phone-wrap">
+    <div class="label">Welcome</div>
+    <div class="phone">
+      <div class="status-bar dark"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3zm0 4a4 4 0 0 1 2.8 1.2l-1.4 1.4A2 2 0 0 0 8 9a2 2 0 0 0-1.4.6L5.2 8.2A4 4 0 0 1 8 7zm0 4l1.4 1.4L8 13.8l-1.4-1.4L8 11z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="splash">
+          <svg class="splash-mandala" viewBox="0 0 200 200">
+            <g fill="none" stroke="#c9a961" stroke-width="0.5">
+              <circle cx="100" cy="100" r="95"/><circle cx="100" cy="100" r="80"/><circle cx="100" cy="100" r="65"/><circle cx="100" cy="100" r="50"/><circle cx="100" cy="100" r="35"/><circle cx="100" cy="100" r="20"/>
+              <line x1="100" y1="5" x2="100" y2="195"/><line x1="5" y1="100" x2="195" y2="100"/>
+              <line x1="32" y1="32" x2="168" y2="168"/><line x1="168" y1="32" x2="32" y2="168"/>
+              <line x1="50" y1="14" x2="150" y2="186"/><line x1="150" y1="14" x2="50" y2="186"/>
+              <line x1="14" y1="50" x2="186" y2="150"/><line x1="186" y1="50" x2="14" y2="150"/>
+            </g>
+          </svg>
+          <div class="swastika">
+            <svg viewBox="0 0 100 100">
+              <g fill="none" stroke="#fae3a8" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
+                <path d="M50 20 L50 50 L80 50"/>
+                <path d="M50 80 L50 50 L20 50"/>
+                <path d="M20 50 L20 20 L50 20"/>
+                <path d="M80 50 L80 80 L50 80"/>
+              </g>
+              <g fill="#fae3a8">
+                <circle cx="50" cy="10" r="3"/>
+                <circle cx="42" cy="6" r="2"/>
+                <circle cx="58" cy="6" r="2"/>
+              </g>
+            </svg>
+          </div>
+          <h1>Jain Center<em>of America · NY</em></h1>
+          <div class="navkar">
+            <div class="label">Navkar Mantra</div>
+            <div class="line">Namo Arihantāṇaṁ</div>
+            <div class="line">Namo Siddhāṇaṁ</div>
+            <div class="line">Namo Āyariyāṇaṁ</div>
+            <div class="line">Namo Uvajjhāyāṇaṁ</div>
+            <div class="line">Namo Loē Savva-Sāhūṇaṁ</div>
+          </div>
+          <div class="splash-cta">
+            <button class="btn-light">Sign In</button>
+            <button class="btn-ghost">Continue as Guest</button>
+          </div>
+        </div>
+        <div class="home-indicator light"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOGIN ===== -->
+  <div class="phone-wrap">
+    <div class="label">Sign In</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="login">
+          <div class="nav-back">‹ Back</div>
+          <h2>Welcome,<br><em>devotee.</em></h2>
+          <p class="sub">Sign in to access events, donations, Pathshala, and your member benefits.</p>
+          <form>
+            <div class="ios-field">
+              <label>Email or Member ID</label>
+              <input type="email" value="manan.s@email.com">
+            </div>
+            <div class="ios-field">
+              <label>Password</label>
+              <input type="password" value="••••••••••">
+            </div>
+            <div class="forgot">Forgot password?</div>
+            <button type="button" class="btn-primary">Sign In</button>
+          </form>
+          <div class="or"><div class="line"></div>OR CONTINUE WITH<div class="line"></div></div>
+          <div class="social">
+            <button>Apple</button>
+            <button>Google</button>
+          </div>
+          <div class="signup">New to JCA? <a href="#">Become a Member</a></div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HOME ===== -->
+  <div class="phone-wrap">
+    <div class="label">Home Dashboard</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="home-bg">
+          <div class="scrollable">
+            <div class="home-hero">
+              <div class="home-greeting">
+                <div class="text">
+                  <div class="hi">Jai Jinendra 🙏</div>
+                  <h2>Manan Shah</h2>
+                </div>
+                <div class="avatar">M</div>
+              </div>
+              <div class="panchang">
+                <div class="top">
+                  <div class="date">Tuesday, 14 April</div>
+                  <div class="tithi">Chaitra Sud 8</div>
+                </div>
+                <div class="grid">
+                  <div class="cell"><div class="lbl">Sunrise</div><div class="val">6:18 AM</div></div>
+                  <div class="cell"><div class="lbl">Sunset</div><div class="val">7:42 PM</div></div>
+                  <div class="cell"><div class="lbl">Pratikraman</div><div class="val">7:00 PM</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-h"><h3>Quick Actions</h3></div>
+            <div class="quick-scroll">
+              <div class="quick-card">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                <div class="name">Donate</div>
+                <div class="meta">Multiple causes</div>
+              </div>
+              <div class="quick-card gold">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+                <div class="name">Live Darshan</div>
+                <div class="meta">5 temples</div>
+              </div>
+              <div class="quick-card">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                <div class="name">Calendar</div>
+                <div class="meta">Jain panchang</div>
+              </div>
+              <div class="quick-card gold">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L2 7 L12 12 L22 7 L12 2z"/><path d="M2 17 L12 22 L22 17"/><path d="M2 12 L12 17 L22 12"/></svg></div>
+                <div class="name">Bhojanshala</div>
+                <div class="meta">Sponsor meal</div>
+              </div>
+            </div>
+
+            <div class="section-h"><h3>Upcoming</h3><div class="more">See all</div></div>
+            <div class="events-list">
+              <div class="event-card">
+                <div class="date-block"><div class="month">Apr</div><div class="day">26</div></div>
+                <div class="info">
+                  <div class="title">Mahavir Janma Kalyanak</div>
+                  <div class="desc">Annual celebration with abhishek, snatra puja & swamivatsalya</div>
+                  <div class="meta"><span>🕘 8:00 AM</span><span>📍 Main Hall</span></div>
+                </div>
+              </div>
+              <div class="event-card">
+                <div class="date-block"><div class="month">Apr</div><div class="day">19</div></div>
+                <div class="info">
+                  <div class="title">Pathshala — Spring Term</div>
+                  <div class="desc">Children's classes resume for ages 5–17</div>
+                  <div class="meta"><span>🕘 10:00 AM</span><span>👥 Open</span></div>
+                </div>
+              </div>
+              <div class="event-card">
+                <div class="date-block"><div class="month">May</div><div class="day">04</div></div>
+                <div class="info">
+                  <div class="title">Lecture by Acharya Vijay</div>
+                  <div class="desc">On the principles of Anekantvad and Ahimsa</div>
+                  <div class="meta"><span>🕘 6:30 PM</span><span>📍 Upashray</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tabbar">
+            <div class="tab active"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4M9 22V12h6v10"/></svg>Home</div>
+            <div class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</div>
+            <div class="tab"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Donate</div>
+            <div class="tab"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Community</div>
+            <div class="tab"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====================== SECTION 2: SACRED EXPERIENCE ====================== -->
+<div class="section-title">
+  <div class="num">ii.</div>
+  <h2>Sacred Experience</h2>
+</div>
+
+<div class="phone-grid">
+
+  <!-- ===== LIVE DARSHAN ===== -->
+  <div class="phone-wrap">
+    <div class="label">Live Darshan</div>
+    <div class="phone">
+      <div class="status-bar dark"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="darshan-bg">
+          <div class="scrollable">
+            <div class="darshan-header">
+              <h2>Live Darshan</h2>
+              <div class="live-dot">LIVE</div>
+            </div>
+            <div class="featured-stream">
+              <div class="deity-glow"></div>
+              <div class="info">
+                <div class="name">Mahavir Swami Temple</div>
+                <div class="viewers">324 watching · Aarti in 12 min</div>
+              </div>
+            </div>
+            <div class="stream-grid">
+              <div class="stream-tile">
+                <div class="live">LIVE</div>
+                <div class="nm">Adinathji Temple</div>
+                <div class="st">187 viewers</div>
+              </div>
+              <div class="stream-tile dada">
+                <div class="live">LIVE</div>
+                <div class="nm">Dadawadi</div>
+                <div class="st">94 viewers</div>
+              </div>
+              <div class="stream-tile">
+                <div class="nm">Shrimad Hall</div>
+                <div class="st">Next: 6:00 PM</div>
+              </div>
+              <div class="stream-tile">
+                <div class="nm">Upashray</div>
+                <div class="st">Lecture at 7 PM</div>
+              </div>
+            </div>
+            <div class="schedule">
+              <div class="ttl">Today's Aarti Schedule</div>
+              <div class="sched-row"><span class="label">Mangal Aarti</span><span class="time">6:30 AM</span></div>
+              <div class="sched-row"><span class="label">Snatra Puja</span><span class="time">9:00 AM</span></div>
+              <div class="sched-row"><span class="label">Sandhya Aarti</span><span class="time">7:00 PM</span></div>
+              <div class="sched-row"><span class="label">Bhavna</span><span class="time">8:30 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator light"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CALENDAR ===== -->
+  <div class="phone-wrap">
+    <div class="label">Jain Calendar</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="cal-bg">
+          <div class="scrollable">
+            <div class="cal-header"><h2>Calendar</h2></div>
+            <div class="cal-month-row">
+              <div class="month">April 2026</div>
+              <div class="cal-arrows">‹  ›</div>
+            </div>
+            <div class="calendar">
+              <div class="cal-week"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
+              <div class="cal-grid">
+                <div class="cal-day faded">30</div><div class="cal-day faded">31</div>
+                <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day parva">4</div><div class="cal-day">5</div>
+                <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day parva">11</div><div class="cal-day">12</div>
+                <div class="cal-day">13</div><div class="cal-day today">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day parva">18</div><div class="cal-day">19</div>
+                <div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day parva">24</div><div class="cal-day">25</div><div class="cal-day parva">26</div>
+                <div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+                <div class="cal-day faded">1</div><div class="cal-day faded">2</div><div class="cal-day faded">3</div>
+              </div>
+            </div>
+            <div class="upcoming-parva">
+              <div class="title">Parva Days</div>
+              <div class="parva-card">
+                <div class="icon">🪷</div>
+                <div class="info"><div class="name">Mahavir Janma Kalyanak</div><div class="date">Sunday, April 26 · Chaitra Sud 13</div></div>
+                <div class="days"><div class="num">12</div><div class="lbl">days</div></div>
+              </div>
+              <div class="parva-card">
+                <div class="icon">📿</div>
+                <div class="info"><div class="name">Ayambil Oli Begins</div><div class="date">Saturday, April 18 · Chaitra Sud 7</div></div>
+                <div class="days"><div class="num">4</div><div class="lbl">days</div></div>
+              </div>
+              <div class="parva-card">
+                <div class="icon">🕉</div>
+                <div class="info"><div class="name">Akshay Tritiya</div><div class="date">Friday, April 24</div></div>
+                <div class="days"><div class="num">10</div><div class="lbl">days</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIRTUAL TOUR ===== -->
+  <div class="phone-wrap">
+    <div class="label">Virtual Tour</div>
+    <div class="phone">
+      <div class="status-bar dark"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="tour-bg">
+          <div class="scrollable">
+            <div class="tour-header">
+              <h2>Explore the<em>five shrines.</em></h2>
+              <p>360° virtual tour of JCA Elmhurst</p>
+            </div>
+            <div class="tour-feature">
+              <div class="arches"></div>
+              <div class="info">
+                <div class="tag">Featured · Marble Sanctum</div>
+                <h3>Mahavir Swami Temple</h3>
+                <div class="deity">Principal deity · 24th Tirthankar</div>
+                <button class="start">▶ Start 360° Tour</button>
+              </div>
+            </div>
+            <div class="tour-list">
+              <div class="ttl">All Sacred Spaces</div>
+              <div class="tour-row">
+                <div class="num">i</div>
+                <div class="nm">Adinathji Temple<small>First Tirthankar Rishabhdev</small></div>
+                <div class="arr">›</div>
+              </div>
+              <div class="tour-row">
+                <div class="num">ii</div>
+                <div class="nm">Upashray Lecture Hall<small>Sthanak for sermons & swadhyay</small></div>
+                <div class="arr">›</div>
+              </div>
+              <div class="tour-row">
+                <div class="num">iii</div>
+                <div class="nm">Shrimad Rajchandra Hall<small>Meditation & spiritual study</small></div>
+                <div class="arr">›</div>
+              </div>
+              <div class="tour-row">
+                <div class="num">iv</div>
+                <div class="nm">Dadawadi<small>Shrine of the four Dadagurus</small></div>
+                <div class="arr">›</div>
+              </div>
+              <div class="tour-row">
+                <div class="num">v</div>
+                <div class="nm">Ashtapad & Art Gallery<small>Research model & exhibitions</small></div>
+                <div class="arr">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator light"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====================== SECTION 3: GIVING & SERVICE ====================== -->
+<div class="section-title">
+  <div class="num">iii.</div>
+  <h2>Giving & Service</h2>
+</div>
+
+<div class="phone-grid">
+
+  <!-- ===== DONATE ===== -->
+  <div class="phone-wrap">
+    <div class="label">Donations</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="donate-bg">
+          <div class="scrollable">
+            <div class="donate-header">
+              <div class="h">Daan &<em>Dharma.</em></div>
+              <div class="sub">Your contribution sustains JCA's temples, education, and seva.</div>
+            </div>
+            <div class="donate-stats">
+              <div class="lbl">Annual Goal · 2026</div>
+              <div class="amt">$340,210 <em>of $500K</em></div>
+              <div class="progress"><div class="fill"></div></div>
+              <div class="footer"><span>68% raised</span><span>1,247 donors</span></div>
+            </div>
+            <div class="donate-categories">
+              <div class="cat-title">Choose a Cause</div>
+              <div class="cat-card featured">
+                <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg></div>
+                <div class="cat-info"><div class="nm">Temple Maintenance</div><div class="ds">Marble, lighting, daily upkeep</div></div>
+                <div class="cat-arrow">›</div>
+              </div>
+              <div class="cat-card gold">
+                <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg></div>
+                <div class="cat-info"><div class="nm">Sponsor Bhojanshala</div><div class="ds">Provide a community meal</div></div>
+                <div class="cat-arrow">›</div>
+              </div>
+              <div class="cat-card">
+                <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                <div class="cat-info"><div class="nm">Pathshala Education</div><div class="ds">Books, scholars, classes for children</div></div>
+                <div class="cat-arrow">›</div>
+              </div>
+              <div class="cat-card">
+                <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></div>
+                <div class="cat-info"><div class="nm">Matching Gifts Program</div><div class="ds">Double your donation via employer</div></div>
+                <div class="cat-arrow">›</div>
+              </div>
+              <div class="cat-card">
+                <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div>
+                <div class="cat-info"><div class="nm">General Fund</div><div class="ds">Where it's needed most</div></div>
+                <div class="cat-arrow">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BHOJANSHALA ===== -->
+  <div class="phone-wrap">
+    <div class="label">Sponsor Bhojanshala</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="bhoj-bg">
+          <div class="scrollable">
+            <div style="padding: 0 24px 14px;"><div class="nav-back">‹ Back</div></div>
+            <div class="bhoj-hero">
+              <div class="tag">Annadan · Sacred Giving</div>
+              <h2>Sponsor a<em>Bhojanshala</em></h2>
+              <p>Provide a wholesome Jain meal for the entire sangha in honor of a loved one or special occasion.</p>
+            </div>
+            <div class="bhoj-section">
+              <div class="ttl">Choose Meal Type</div>
+              <div class="meal-types">
+                <div class="meal-card selected">
+                  <div class="icon">🍛</div>
+                  <div class="nm">Full Lunch</div>
+                  <div class="price">$1,251</div>
+                </div>
+                <div class="meal-card">
+                  <div class="icon">🥣</div>
+                  <div class="nm">Snack Seva</div>
+                  <div class="price">$501</div>
+                </div>
+                <div class="meal-card">
+                  <div class="icon">🫓</div>
+                  <div class="nm">Sweet Box</div>
+                  <div class="price">$351</div>
+                </div>
+                <div class="meal-card">
+                  <div class="icon">🪔</div>
+                  <div class="nm">Festival Feast</div>
+                  <div class="price">$2,501</div>
+                </div>
+              </div>
+            </div>
+            <div class="bhoj-section">
+              <div class="ttl">Pick a Date</div>
+              <div class="date-picker">
+                <div class="lbl">Available Sundays · April</div>
+                <div class="date-row">
+                  <div class="date-pill"><div class="d">Sun</div><div class="num">19</div></div>
+                  <div class="date-pill selected"><div class="d">Sun</div><div class="num">26</div></div>
+                  <div class="date-pill"><div class="d">Sun</div><div class="num">3</div></div>
+                  <div class="date-pill"><div class="d">Sun</div><div class="num">10</div></div>
+                  <div class="date-pill"><div class="d">Sun</div><div class="num">17</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="bhoj-cta">
+              <button class="btn-primary">Continue to Payment · $1,251</button>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAYMENT ===== -->
+  <div class="phone-wrap">
+    <div class="label">Payment</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="pay-bg">
+          <div class="scrollable">
+            <div style="padding: 0 24px 14px;"><div class="nav-back">‹ Back</div></div>
+            <div class="pay-head">
+              <h2>Complete<em>payment.</em></h2>
+            </div>
+            <div class="pay-amount">
+              <div class="lbl">Donation Amount</div>
+              <div class="cause">Sponsor Bhojanshala · Apr 26</div>
+              <div class="val">$1,251<em>.00</em></div>
+            </div>
+            <div class="pay-section">
+              <div class="ttl">Payment Method</div>
+              <div class="method-grid">
+                <div class="method selected">
+                  <div class="logo visa">VISA</div>
+                  <div class="nm">Credit / Debit</div>
+                </div>
+                <div class="method">
+                  <div class="logo ap"></div>
+                  <div class="nm">Apple Pay</div>
+                </div>
+                <div class="method">
+                  <div class="logo gp">G</div>
+                  <div class="nm">Google Pay</div>
+                </div>
+                <div class="method">
+                  <div class="logo pp">P</div>
+                  <div class="nm">PayPal</div>
+                </div>
+                <div class="method">
+                  <div class="logo zl">Z</div>
+                  <div class="nm">Zelle</div>
+                </div>
+                <div class="method">
+                  <div class="logo ach">ACH</div>
+                  <div class="nm">Bank Transfer</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-preview">
+              <div class="card-top">
+                <div class="card-chip"></div>
+                <div class="card-brand">JCA</div>
+              </div>
+              <div class="card-number">4532  •••• ••••  8891</div>
+              <div class="card-bot">
+                <div><div class="lbl">Card Holder</div><div class="val">MANAN SHAH</div></div>
+                <div><div class="lbl">Expires</div><div class="val">08 / 28</div></div>
+              </div>
+            </div>
+            <div class="pay-section">
+              <div class="ttl">Card Details</div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Card Number</label>
+                  <input type="text" value="4532 1234 5678 8891">
+                </div>
+                <div class="form-row-2">
+                  <div class="form-field">
+                    <label>Expiry</label>
+                    <input type="text" value="08 / 28">
+                  </div>
+                  <div class="form-field">
+                    <label>CVV</label>
+                    <input type="text" value="•••">
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>Cardholder Name</label>
+                  <input type="text" value="Manan Shah">
+                </div>
+                <div class="form-field">
+                  <label>Billing ZIP</label>
+                  <input type="text" value="11373">
+                </div>
+              </div>
+              <div class="save-toggle">
+                <div class="switch"></div>
+                <div class="text">
+                  <strong>Save card for future donations</strong>
+                  Securely stored with Stripe
+                </div>
+              </div>
+            </div>
+            <button class="pay-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Pay $1,251.00
+            </button>
+            <div class="secure-note">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Secured by 256-bit SSL encryption
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VOLUNTEER ===== -->
+  <div class="phone-wrap">
+    <div class="label">Volunteer & Seva</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="vol-bg">
+          <div class="scrollable">
+            <div class="vol-header">
+              <h2>Offer your<em>seva.</em></h2>
+              <p>Volunteer opportunities at the Center</p>
+            </div>
+            <div class="impact-banner">
+              <div class="num">142</div>
+              <div class="text"><strong>Hours volunteered</strong>by you across 18 events this year</div>
+            </div>
+            <div class="opp-grid">
+              <div class="opp-card">
+                <div class="top">
+                  <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg></div>
+                  <div class="info"><div class="nm">Bhojanshala Helper</div><div class="ds">Help serve and clean up Sunday community lunch</div></div>
+                  <div class="urgent">Urgent</div>
+                </div>
+                <div class="bottom"><div class="when">Sun, Apr 19 · 11 AM – 2 PM</div><div class="signup">Sign up ›</div></div>
+              </div>
+              <div class="opp-card">
+                <div class="top">
+                  <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg></div>
+                  <div class="info"><div class="nm">Pathshala Teacher's Aide</div><div class="ds">Assist children's classes (ages 8–12)</div></div>
+                </div>
+                <div class="bottom"><div class="when">Sundays · 10 AM – 12 PM</div><div class="signup">Sign up ›</div></div>
+              </div>
+              <div class="opp-card">
+                <div class="top">
+                  <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                  <div class="info"><div class="nm">Mahavir Janma Kalyanak</div><div class="ds">Setup, registration, hospitality crew</div></div>
+                </div>
+                <div class="bottom"><div class="when">Sun, Apr 26 · 7 AM – 4 PM</div><div class="signup">Sign up ›</div></div>
+              </div>
+              <div class="opp-card">
+                <div class="top">
+                  <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg></div>
+                  <div class="info"><div class="nm">Senior Group Visit</div><div class="ds">Drive elders to weekly satsang</div></div>
+                </div>
+                <div class="bottom"><div class="when">Wednesdays · 5 PM</div><div class="signup">Sign up ›</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====================== SECTION 4: COMMUNITY & LEARNING ====================== -->
+<div class="section-title">
+  <div class="num">iv.</div>
+  <h2>Community & Learning</h2>
+</div>
+
+<div class="phone-grid">
+
+  <!-- ===== EVENT DETAIL ===== -->
+  <div class="phone-wrap">
+    <div class="label">Event Detail</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="event-bg">
+          <div class="scrollable">
+            <div style="padding: 0 24px 14px;"><div class="nav-back">‹ Events</div></div>
+            <div class="event-cover">
+              <svg class="swastika-mini" viewBox="0 0 100 100">
+                <g fill="none" stroke="#fae3a8" stroke-width="8" stroke-linecap="square">
+                  <path d="M50 20 L50 50 L80 50"/><path d="M50 80 L50 50 L20 50"/>
+                  <path d="M20 50 L20 20 L50 20"/><path d="M80 50 L80 80 L50 80"/>
+                </g>
+              </svg>
+              <div class="info">
+                <div class="tag">Major Festival</div>
+                <h2>Mahavir Janma<br>Kalyanak 2026</h2>
+              </div>
+            </div>
+            <div class="event-meta">
+              <div class="meta-row">
+                <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div>
+                <div class="text"><div class="lbl">Date</div><div class="val">Sunday, April 26, 2026</div></div>
+              </div>
+              <div class="meta-row">
+                <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                <div class="text"><div class="lbl">Time</div><div class="val">8:00 AM – 4:00 PM ET</div></div>
+              </div>
+              <div class="meta-row">
+                <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                <div class="text"><div class="lbl">Location</div><div class="val">JCA Main Hall · 43-11 Ithaca St</div></div>
+              </div>
+            </div>
+            <div class="event-desc">
+              <div class="ttl">About</div>
+              <p>Join us for the annual celebration of Bhagwan Mahavir's birth — featuring Snatra Puja, Abhishek, cultural programs by youth and Pathshala children, followed by Swamivatsalya (community lunch).</p>
+            </div>
+            <div class="rsvp-bar">
+              <div class="att"><div class="num">428</div><div class="lbl">Going</div></div>
+              <button>RSVP</button>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PATHSHALA ===== -->
+  <div class="phone-wrap">
+    <div class="label">Pathshala</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="path-bg">
+          <div class="scrollable">
+            <div class="path-header">
+              <h2>Pathshala<em>learn & grow.</em></h2>
+              <p>Continue your spiritual study</p>
+            </div>
+            <div class="level-tabs">
+              <div class="level-tab">Beginner</div>
+              <div class="level-tab active">Intermediate</div>
+              <div class="level-tab">Advanced</div>
+            </div>
+            <div class="lesson-card">
+              <div class="lesson-cover">
+                <div class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></div>
+              </div>
+              <div class="lesson-info">
+                <div class="num">Lesson 7 of 12</div>
+                <div class="ttl">The 5 Mahavratas Explained</div>
+                <div class="meta"><span>⏱ 18 min</span><span>📖 Workbook</span><span>🎓 Quiz</span></div>
+                <div class="progress"><div class="fill"></div></div>
+                <div class="pct">60% complete</div>
+              </div>
+            </div>
+            <div class="schedule-section">
+              <div class="ttl">In-Person Classes</div>
+              <div class="class-row">
+                <div class="day-block"><div class="d">Sun</div><div class="n">19</div></div>
+                <div class="info"><div class="nm">Group A · Ages 5–8</div><div class="tm">10:00 – 11:00 AM · Room 2</div></div>
+                <div style="color: var(--muted);">›</div>
+              </div>
+              <div class="class-row">
+                <div class="day-block"><div class="d">Sun</div><div class="n">19</div></div>
+                <div class="info"><div class="nm">Group B · Ages 9–12</div><div class="tm">11:00 – 12:00 PM · Room 3</div></div>
+                <div style="color: var(--muted);">›</div>
+              </div>
+              <div class="class-row">
+                <div class="day-block"><div class="d">Sun</div><div class="n">19</div></div>
+                <div class="info"><div class="nm">Teen Discussion · 13–17</div><div class="tm">12:00 – 1:00 PM · Upashray</div></div>
+                <div style="color: var(--muted);">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NEWS / NEWSLETTER ===== -->
+  <div class="phone-wrap">
+    <div class="label">News & Newsletters</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="news-bg">
+          <div class="scrollable">
+            <div class="news-header">
+              <h2>News</h2>
+              <div class="filter"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+            </div>
+            <div class="news-pills">
+              <div class="news-pill active">All</div>
+              <div class="news-pill">Festivals</div>
+              <div class="news-pill">Newsletters</div>
+              <div class="news-pill">Announcements</div>
+            </div>
+            <div class="news-feature">
+              <div class="img">
+                <div class="badge">Featured</div>
+                <div class="deity-glow"></div>
+              </div>
+              <div class="body">
+                <div class="date">April 12, 2026</div>
+                <h3>Mahavir Janma Kalyanak — Full Schedule Released</h3>
+                <p>BOT and EC are pleased to announce the full schedule for the annual celebration on Sunday, April 26th...</p>
+              </div>
+            </div>
+            <div class="news-row">
+              <div class="thumb">📰</div>
+              <div class="info">
+                <div class="dt">April 8, 2026</div>
+                <h4>Spring Newsletter — Paryushan Preparations Begin</h4>
+              </div>
+            </div>
+            <div class="news-row">
+              <div class="thumb">📋</div>
+              <div class="info">
+                <div class="dt">April 5, 2026</div>
+                <h4>General Body Meeting — Annual Report Available</h4>
+              </div>
+            </div>
+            <div class="news-row">
+              <div class="thumb">🎓</div>
+              <div class="info">
+                <div class="dt">April 1, 2026</div>
+                <h4>Pathshala Spring Term Registration Now Open</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROFILE ===== -->
+  <div class="phone-wrap">
+    <div class="label">Member Profile</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4" y="4" width="3" height="8" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg><svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 3a8 8 0 0 1 5.6 2.3l-1.4 1.4A6 6 0 0 0 8 5a6 6 0 0 0-4.2 1.7L2.4 5.3A8 8 0 0 1 8 3z"/></svg><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg></div></div>
+      <div class="screen">
+        <div class="prof-bg">
+          <div class="scrollable">
+            <div style="padding: 0 24px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500;">Profile</div>
+              <div style="color: var(--crimson); font-size: 14px; font-weight: 500;">Edit</div>
+            </div>
+            <div class="prof-header">
+              <div class="prof-avatar">M</div>
+              <h2>Manan Shah</h2>
+              <div class="id">JCA Life Member · ID 04812</div>
+              <div class="prof-stats">
+                <div class="prof-stat"><div class="num">$2,851</div><div class="lbl">Donated</div></div>
+                <div class="prof-stat"><div class="num">142</div><div class="lbl">Seva Hrs</div></div>
+                <div class="prof-stat"><div class="num">5</div><div class="lbl">Family</div></div>
+              </div>
+            </div>
+            <div class="prof-section">
+              <div class="ttl">Family Members <div class="add">+ Add</div></div>
+              <div class="family-list">
+                <div class="family-row">
+                  <div class="family-av">R</div>
+                  <div class="info"><div class="nm">Rajesh Shah</div><div class="rel">Father · DOB 12 Aug 1968</div></div>
+                  <div class="arr">›</div>
+                </div>
+                <div class="family-row">
+                  <div class="family-av">S</div>
+                  <div class="info"><div class="nm">Sunita Shah</div><div class="rel">Mother · DOB 04 Mar 1972</div></div>
+                  <div class="arr">›</div>
+                </div>
+                <div class="family-row">
+                  <div class="family-av">P</div>
+                  <div class="info"><div class="nm">Priya Shah</div><div class="rel">Sister · DOB 21 Nov 2001</div></div>
+                  <div class="arr">›</div>
+                </div>
+              </div>
+            </div>
+            <div class="prof-section">
+              <div class="ttl">Account</div>
+              <div class="prof-list">
+                <div class="prof-item"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="nm">Donation Receipts</div><div class="arr">›</div></div>
+                <div class="prof-item"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="nm">Payment Methods</div><div class="arr">›</div></div>
+                <div class="prof-item"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="nm">Notifications</div><div class="arr">›</div></div>
+                <div class="prof-item"><div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="nm">Help & Support</div><div class="arr">›</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
