@@ -40,13 +40,13 @@ final class DonationFlowViewModel {
 
     var isCardFormValid: Bool {
         let digits = cardNumber.filter(\.isNumber)
-        let expiryParts = cardExpiry.split(separator: "/")
         let cvvValid = cardCVV.filter(\.isNumber).count >= 3
         let nameValid = !cardholderName.trimmingCharacters(in: .whitespaces).isEmpty
-        return digits.count == 16 && expiryParts.count == 2 && cvvValid && nameValid
+        return digits.count >= 13 && !cardExpiry.isEmpty && cvvValid && nameValid
     }
 
     var isPayFormValid: Bool {
+        guard selectedAmount > 0 else { return false }
         switch selectedPaymentType {
         case .creditCard, .debitCard:
             return isCardFormValid
@@ -102,9 +102,10 @@ final class DonationFlowViewModel {
                 user.totalDonated += selectedAmount
                 context.insert(donation)
                 try? context.save()
-            }
 
-            navigationPath.append(.success)
+                // Update sponsor banner with donor's name
+                SponsorState.shared.currentSponsor = user.name
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

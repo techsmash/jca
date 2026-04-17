@@ -10,6 +10,7 @@ struct MainTabView: View {
 
     var body: some View {
         @Bindable var bindableState = appState
+        @Bindable var bindableVM = donationVM
         ZStack(alignment: .top) {
             TabView(selection: $bindableState.selectedTab) {
 
@@ -43,7 +44,7 @@ struct MainTabView: View {
                 .tag(AppTab.calendar)
 
                 // MARK: Donate
-                NavigationStack {
+                NavigationStack(path: $bindableVM.navigationPath) {
                     DonateView()
                         .environment(donationVM)
                 }

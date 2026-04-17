@@ -195,11 +195,11 @@ struct MockDataProvider {
 
     static var donationCategories: [DonationCategory] {
         [
-            DonationCategory(name: "Temple Maintenance", description: "Preserve the sacred temple grounds", iconName: "building.columns.fill", defaultAmount: 501),
+            DonationCategory(name: "General Fund", description: "Where it's needed most", iconName: "heart.fill", defaultAmount: 0),
+            DonationCategory(name: "Temple Maintenance", description: "Preserve the sacred temple grounds", iconName: "building.columns.fill", defaultAmount: 251),
             DonationCategory(name: "Sponsor Bhojanshala", description: "Feed the community with a meal", iconName: "fork.knife", defaultAmount: 1251, isBhojanshala: true),
-            DonationCategory(name: "Pathshala Education", description: "Support religious education programs", iconName: "book.fill", defaultAmount: 251),
-            DonationCategory(name: "Matching Gifts", description: "Double your impact", iconName: "arrow.triangle.2.circlepath", defaultAmount: 1001),
-            DonationCategory(name: "General Fund", description: "Support all JCA operations", iconName: "heart.fill", defaultAmount: 101)
+            DonationCategory(name: "Pathshala Education", description: "Support religious education programs", iconName: "book.fill", defaultAmount: 151),
+            DonationCategory(name: "Matching Gifts Program", description: "Double your impact via employer", iconName: "arrow.triangle.2.circlepath", defaultAmount: 0)
         ]
     }
 

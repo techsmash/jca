@@ -5,8 +5,6 @@ struct DonateView: View {
     @State private var progressFill: Double = 0
 
     var body: some View {
-        @Bindable var vm = donationVM
-
         ScrollView {
             VStack(spacing: 0) {
                 // Progress stats card
@@ -26,14 +24,18 @@ struct DonateView: View {
 
                     VStack(spacing: 10) {
                         ForEach(donationVM.categories) { category in
-                            NavigationLink(value: category) {
+                            Button {
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                donationVM.selectedCategory = category
+                                donationVM.selectedAmount = category.defaultAmount
+                                donationVM.navigationPath.append(
+                                    category.isBhojanshala ? DonationRoute.bhojanshala : DonationRoute.payment
+                                )
+                            } label: {
                                 CauseCard(
                                     category: category,
                                     isSelected: donationVM.selectedCategory?.id == category.id
-                                ) {
-                                    donationVM.selectedCategory = category
-                                    donationVM.selectedAmount = category.defaultAmount
-                                }
+                                )
                             }
                             .buttonStyle(.plain)
                         }
@@ -47,13 +49,17 @@ struct DonateView: View {
         .background(Color.jcaCream.ignoresSafeArea())
         .navigationTitle("Donate")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: DonationCategory.self) { category in
-            if category.isBhojanshala {
+        .navigationDestination(for: DonationRoute.self) { route in
+            switch route {
+            case .bhojanshala:
                 BhojanshalaView()
                     .environment(donationVM)
-            } else {
+            case .payment:
                 PaymentView()
                     .environment(donationVM)
+            case .success:
+                // Success is handled via paymentResult in PaymentView
+                EmptyView()
             }
         }
         .onAppear {

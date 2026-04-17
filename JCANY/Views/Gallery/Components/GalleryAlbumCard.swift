@@ -39,7 +39,7 @@ struct GalleryAlbumCard: View {
                     )
                 }
             }
-            .frame(width: 130, height: 90)
+            .frame(width: 120, height: 90)
             .clipped()
 
             VStack(alignment: .leading, spacing: 2) {
@@ -53,7 +53,7 @@ struct GalleryAlbumCard: View {
             }
             .padding(8)
         }
-        .frame(width: 130)
+        .frame(width: 120)
         .background(Color.jcaPaper)
         .clipShape(RoundedRectangle(cornerRadius: Radii.m))
         .overlay(

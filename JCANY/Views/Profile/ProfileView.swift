@@ -97,7 +97,12 @@ struct ProfileView: View {
                             SettingsRow(icon: "bell.badge.fill", title: "Notification Playground", tint: .blue)
                         }
                         Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        SettingsRow(icon: "questionmark.circle.fill", title: "Help & Support", tint: .jcaMuted)
+                        Button {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        } label: {
+                            SettingsRow(icon: "questionmark.circle.fill", title: "Help & Support", tint: .jcaMuted)
+                        }
+                        .buttonStyle(.plain)
                         Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
                         Button {
                             auth.signOut()

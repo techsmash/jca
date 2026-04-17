@@ -58,7 +58,10 @@ struct BhojanshalaView: View {
                 .padding(.top, 24)
 
                 // CTA
-                NavigationLink(destination: PaymentView().environment(donationVM)) {
+                Button {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    donationVM.navigationPath.append(DonationRoute.payment)
+                } label: {
                     HStack {
                         Text("Continue to Payment")
                             .font(JCAFont.bodyMedium)
@@ -77,6 +80,7 @@ struct BhojanshalaView: View {
                             .shadow(color: Color.jcaCrimson.opacity(0.25), radius: 8, y: 4)
                     )
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
                 .padding(.top, 28)
                 .padding(.bottom, 40)

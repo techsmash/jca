@@ -141,9 +141,7 @@ struct RSVPBar: View {
         VStack(spacing: 0) {
             Divider().overlay(Color.jcaBorder)
             HStack(spacing: 12) {
-                Button {
-                    // Share
-                } label: {
+                ShareLink(item: "\(event.title)\n\(event.date.formatted(.dateTime.weekday().month().day().year()))\n\(event.location)") {
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 18))
                         .foregroundStyle(Color.jcaCrimson)

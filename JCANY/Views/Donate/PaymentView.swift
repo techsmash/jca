@@ -6,8 +6,9 @@ struct PaymentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [User]
     @FocusState private var focusedField: CardField?
+    @State private var amountString: String = ""
 
-    enum CardField { case number, expiry, cvv, name, zip }
+    enum CardField { case number, expiry, cvv, name, zip, amount }
 
     let paymentTypes: [PaymentType] = [.creditCard, .applePay, .googlePay, .payPal, .zelle, .ach]
 
@@ -16,10 +17,10 @@ struct PaymentView: View {
 
         ScrollView {
             VStack(spacing: 24) {
-                // Amount summary
-                AmountSummaryCard(
+                // Editable amount card
+                EditableAmountCard(
                     cause: donationVM.selectedCategory?.name ?? "General Fund",
-                    amount: donationVM.formattedAmount
+                    amountString: $amountString
                 )
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
@@ -151,6 +152,18 @@ struct PaymentView: View {
         .navigationTitle("Payment")
         .navigationBarTitleDisplayMode(.inline)
         .onTapGesture { focusedField = nil }
+        .onAppear {
+            let amt = donationVM.selectedAmount
+            amountString = amt > 0 ? String(describing: amt) : ""
+        }
+        .onChange(of: amountString) { _, newValue in
+            let cleaned = newValue.replacingOccurrences(of: ",", with: "").replacingOccurrences(of: "$", with: "")
+            if let d = Decimal(string: cleaned), d >= 0 {
+                donationVM.selectedAmount = d
+            } else if cleaned.isEmpty {
+                donationVM.selectedAmount = 0
+            }
+        }
         .navigationDestination(isPresented: Binding(
             get: { donationVM.paymentResult != nil },
             set: { if !$0 { donationVM.paymentResult = nil } }
@@ -163,48 +176,76 @@ struct PaymentView: View {
     }
 }
 
-private struct AmountSummaryCard: View {
+private struct EditableAmountCard: View {
     let cause: String
-    let amount: String
+    @Binding var amountString: String
+    @FocusState private var isFocused: Bool
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Donating to")
-                    .font(JCAFont.label)
-                    .foregroundStyle(Color.jcaMuted)
-                    .kerning(0.8)
-                    .textCase(.uppercase)
-                Text(cause)
-                    .font(JCAFont.headline)
-                    .foregroundStyle(Color.jcaInk)
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Donating to")
+                        .font(JCAFont.label)
+                        .foregroundStyle(Color.jcaMuted)
+                        .kerning(0.8)
+                        .textCase(.uppercase)
+                    Text(cause)
+                        .font(JCAFont.headline)
+                        .foregroundStyle(Color.jcaInk)
+                }
+                Spacer()
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text("$")
+                        .font(.fraunces(size: 22, weight: .medium))
+                        .foregroundStyle(Color.jcaCrimson)
+                    TextField("0", text: $amountString)
+                        .font(.fraunces(size: 28, weight: .semibold))
+                        .foregroundStyle(Color.jcaCrimson)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused($isFocused)
+                        .frame(minWidth: 60, maxWidth: 120)
+                }
             }
-            Spacer()
-            Text(amount)
-                .font(.fraunces(size: 28, weight: .semibold))
-                .foregroundStyle(Color.jcaCrimson)
+            .padding(18)
         }
-        .padding(18)
         .background(
             RoundedRectangle(cornerRadius: Radii.base)
                 .fill(Color.jcaPaper)
                 .overlay(
                     RoundedRectangle(cornerRadius: Radii.base)
-                        .stroke(Color.jcaBorder, lineWidth: 0.5)
+                        .stroke(isFocused ? Color.jcaCrimson.opacity(0.4) : Color.jcaBorder, lineWidth: isFocused ? 1 : 0.5)
                 )
                 .shadowSm()
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Donating \(amount) to \(cause)")
+        .accessibilityLabel("Donating to \(cause). Amount field.")
     }
 }
 
 struct PaymentSuccessView: View {
     @Environment(DonationFlowViewModel.self) private var donationVM
+    @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
     let result: PaymentResult
     @State private var checkmarkScale: CGFloat = 0
     @State private var showContent = false
+    @State private var showShareSheet = false
+
+    private var receiptText: String {
+        """
+        JCA NY Donation Receipt
+        -----------------------
+        Amount:         \(formatAmount(result.amount))
+        Cause:          \(result.cause)
+        Transaction ID: \(result.transactionID)
+        Date:           \(Date().formatted(.dateTime.day().month().year()))
+
+        Jay Jinendra 🙏
+        Jain Center of America, New York
+        """
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -266,9 +307,8 @@ struct PaymentSuccessView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                Button {
-                    // Download receipt action
-                } label: {
+                // Download / Share receipt
+                ShareLink(item: receiptText) {
                     HStack(spacing: 8) {
                         Image(systemName: "arrow.down.doc.fill")
                         Text("Download Receipt")
@@ -285,9 +325,14 @@ struct PaymentSuccessView: View {
                 .accessibilityLabel("Download receipt")
 
                 Button {
-                    donationVM.reset()
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    appState.selectedTab = .home
+                    // Delay reset so tab switch animates first
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        donationVM.reset()
+                    }
                 } label: {
-                    Text("Done")
+                    Text("Back to Home")
                         .font(JCAFont.bodyMedium)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -298,7 +343,7 @@ struct PaymentSuccessView: View {
                                 .fill(Color.jcaCrimson)
                         )
                 }
-                .accessibilityLabel("Done, return to home")
+                .accessibilityLabel("Return to home screen")
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
