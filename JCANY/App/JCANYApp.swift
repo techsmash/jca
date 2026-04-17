@@ -4,6 +4,13 @@ import SwiftData
 @main
 struct JCANYApp: App {
     @State private var authService = AuthService()
+    @State private var appState = AppState()
+
+    init() {
+        // Configure shared URL cache for remote gallery images (50 MB memory, 200 MB disk)
+        URLCache.shared.memoryCapacity  = 50 * 1024 * 1024
+        URLCache.shared.diskCapacity    = 200 * 1024 * 1024
+    }
 
     let modelContainer: ModelContainer = {
         let schema = Schema([
@@ -24,6 +31,8 @@ struct JCANYApp: App {
         WindowGroup {
             RootView()
                 .environment(authService)
+                .environment(appState)
+                .environment(PushNotificationService.shared)
                 .preferredColorScheme(.light)
         }
         .modelContainer(modelContainer)

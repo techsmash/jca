@@ -2,62 +2,89 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
-    @State private var selectedTab: Tab = .home
+    @Environment(AppState.self) private var appState
     @State private var donationVM = DonationFlowViewModel()
     @Query private var users: [User]
-
-    enum Tab: Int, CaseIterable {
-        case home, calendar, donate, community, profile
-    }
 
     var currentUser: User? { users.first }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack {
-                HomeView()
-            }
-            .tabItem {
-                Label("Home", systemImage: selectedTab == .home ? "house.fill" : "house")
-            }
-            .tag(Tab.home)
+        @Bindable var bindableState = appState
+        ZStack(alignment: .top) {
+            TabView(selection: $bindableState.selectedTab) {
 
-            NavigationStack {
-                CalendarView()
-            }
-            .tabItem {
-                Label("Calendar", systemImage: "calendar")
-            }
-            .tag(Tab.calendar)
+                // MARK: Home
+                NavigationStack(path: $bindableState.homeNavPath) {
+                    HomeView()
+                        .navigationDestination(for: HomeRoute.self) { route in
+                            switch route {
+                            case .liveDarshan:
+                                LiveDarshanView()
+                            case .eventDetail(let id):
+                                EventDetailView(
+                                    event: MockDataProvider.events.first { $0.id == id }
+                                        ?? MockDataProvider.events[0]
+                                )
+                            }
+                        }
+                }
+                .tabItem {
+                    Label("Home", systemImage: appState.selectedTab == .home ? "house.fill" : "house")
+                }
+                .tag(AppTab.home)
 
-            NavigationStack {
-                DonateView()
-                    .environment(donationVM)
-            }
-            .tabItem {
-                Label("Donate", systemImage: selectedTab == .donate ? "heart.fill" : "heart")
-            }
-            .tag(Tab.donate)
+                // MARK: Calendar
+                NavigationStack {
+                    CalendarView()
+                }
+                .tabItem {
+                    Label("Calendar", systemImage: "calendar")
+                }
+                .tag(AppTab.calendar)
 
-            NavigationStack {
-                CommunityHubView()
-            }
-            .tabItem {
-                Label("Community", systemImage: selectedTab == .community ? "bubble.left.fill" : "bubble.left")
-            }
-            .tag(Tab.community)
+                // MARK: Donate
+                NavigationStack {
+                    DonateView()
+                        .environment(donationVM)
+                }
+                .tabItem {
+                    Label("Donate", systemImage: appState.selectedTab == .donate ? "heart.fill" : "heart")
+                }
+                .tag(AppTab.donate)
 
-            NavigationStack {
-                ProfileView()
+                // MARK: Community
+                NavigationStack(path: $bindableState.communityNavPath) {
+                    CommunityHubView()
+                        .navigationDestination(for: CommunityRoute.self) { route in
+                            switch route {
+                            case .gallery:
+                                GalleryView()
+                            }
+                        }
+                }
+                .tabItem {
+                    Label("Community", systemImage: appState.selectedTab == .community ? "bubble.left.fill" : "bubble.left")
+                }
+                .tag(AppTab.community)
+
+                // MARK: Profile
+                NavigationStack {
+                    ProfileView()
+                }
+                .tabItem {
+                    Label("Profile", systemImage: appState.selectedTab == .profile ? "person.fill" : "person")
+                }
+                .tag(AppTab.profile)
             }
-            .tabItem {
-                Label("Profile", systemImage: selectedTab == .profile ? "person.fill" : "person")
+            .tint(Color.jcaCrimson)
+            .onChange(of: appState.selectedTab) { _, _ in
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
             }
-            .tag(Tab.profile)
-        }
-        .tint(Color.jcaCrimson)
-        .onChange(of: selectedTab) { _, _ in
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+
+            // MARK: Push notification banner
+            PushNotificationBanner()
+                .animation(.spring(response: 0.55, dampingFraction: 0.7),
+                           value: PushNotificationService.shared.active?.id)
         }
     }
 }

@@ -93,7 +93,9 @@ struct ProfileView: View {
                             SettingsRow(icon: "creditcard.fill", title: "Payment Methods", tint: Color.jcaGoldDeep)
                         }
                         Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        SettingsRow(icon: "bell.fill", title: "Notifications", tint: .blue)
+                        NavigationLink(destination: NotificationDemoView()) {
+                            SettingsRow(icon: "bell.badge.fill", title: "Notification Playground", tint: .blue)
+                        }
                         Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
                         SettingsRow(icon: "questionmark.circle.fill", title: "Help & Support", tint: .jcaMuted)
                         Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
