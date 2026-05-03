@@ -5,7 +5,16 @@
       "Bash(Select-Object FullName)",
       "Bash(Sort-Object FullName)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\sunil\\\\projects\\\\jca\\\\jnc-app\\\\JCANY\" -Recurse -File | Where-Object {$_.Name -match \"MIGRATION|README|Info\\\\.plist\"} | Select-Object -ExpandProperty FullName)",
-      "Bash(git -C \"C:/Users/sunil/projects/jca/jnc-app\" status --short)"
+      "Bash(git -C \"C:/Users/sunil/projects/jca/jnc-app\" status --short)",
+      "WebSearch",
+      "WebFetch(domain:www.jcany.org)",
+      "Bash(python3 -c \"import yt_dlp; print\\('yt_dlp python ok'\\)\")",
+      "PowerShell(Get-Command *)",
+      "Bash(pip3 install *)",
+      "Bash(python3 -m pip install yt-dlp)",
+      "PowerShell(winget install *)",
+      "PowerShell(Get-ChildItem *)",
+      "WebFetch(domain:www.youtube.com)"
     ]
   }
 }
