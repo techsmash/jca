@@ -11,76 +11,45 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
+                // 1. Greeting + Panchang
                 heroSection
                     .padding(.bottom, 4)
 
-                // Sponsor highlight banner
+                // 2. Today's Swamivatsalya
                 SponsorHighlightBanner()
 
-                // Quick Actions
+                // 3. Thought for Today
+                ThoughtForTodayCard(
+                    text: viewModel.quoteOfDay.text,
+                    attribution: viewModel.quoteOfDay.attribution
+                )
+                .padding(.top, 14)
+
+                // 4. Daily Quiz
+                DailyQuizCard(
+                    dayIndex: viewModel.quizDayIndex,
+                    streak: viewModel.quizStreak,
+                    quiz: viewModel.currentQuiz,
+                    selectedAnswer: viewModel.quizSelectedAnswer,
+                    onAnswer: { viewModel.answerQuiz(optionIndex: $0) }
+                )
+                .padding(.horizontal, 24)
+                .padding(.top, 14)
+
+                // 5. Quick Actions
+                quickActionsSection
+                    .padding(.top, 22)
+
+                // 6. Center Hours
                 VStack(spacing: 12) {
-                    SectionHeader(title: "Quick Actions")
+                    SectionHeader(title: "Center Hours")
                         .padding(.horizontal, 24)
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            NavigationLink(destination: LiveDarshanView()) {
-                                QuickActionCard(title: "Live Darshan", subtitle: "Streaming now", icon: "video.fill")
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                appState.selectedTab = .donate
-                            } label: {
-                                QuickActionCard(title: "Donate", subtitle: "Support the temple", icon: "heart.fill", isGold: true)
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                appState.selectedTab = .calendar
-                            } label: {
-                                QuickActionCard(title: "Calendar", subtitle: "Upcoming events", icon: "calendar")
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                appState.navigate(to: .gallery)
-                            } label: {
-                                QuickActionCard(title: "Gallery", subtitle: "Photos & videos", icon: "photo.stack.fill", isGold: true)
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                appState.selectedTab = .community
-                            } label: {
-                                QuickActionCard(title: "Volunteer", subtitle: "Join seva", icon: "hands.sparkles.fill")
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                appState.selectedTab = .donate
-                            } label: {
-                                QuickActionCard(title: "Bhojanshala", subtitle: "Sponsor a meal", icon: "fork.knife")
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: VirtualTourView()) {
-                                QuickActionCard(title: "Virtual Tour", subtitle: "Explore shrines", icon: "building.columns", isGold: true)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                    CenterHoursCard(data: viewModel.centerHours)
                         .padding(.horizontal, 24)
-                        .padding(.bottom, 8)
-                    }
                 }
                 .padding(.top, 22)
 
-                // Upcoming Events
+                // 7. Upcoming Events
                 VStack(spacing: 12) {
                     SectionHeader(title: "Upcoming Events", actionTitle: "See all") {
                         appState.selectedTab = .calendar
@@ -98,6 +67,16 @@ struct HomeView: View {
                     .padding(.horizontal, 24)
                 }
                 .padding(.top, 22)
+
+                // 8. Community Feed Preview
+                CommunityFeedPreviewCard(
+                    posts: viewModel.feedPreviewPosts,
+                    onOpenFeed: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.selectedTab = .community
+                    }
+                )
+                .padding(.top, 22)
                 .padding(.bottom, 32)
             }
         }
@@ -105,17 +84,17 @@ struct HomeView: View {
         .navigationBarHidden(true)
     }
 
+    // MARK: - Hero (Greeting + Panchang)
+
     @ViewBuilder
     private var heroSection: some View {
         ZStack(alignment: .topTrailing) {
-            // Faint mandala
             MandalaBackgroundView(opacity: 0.06, size: 280, animate: false)
                 .offset(x: 60, y: -40)
                 .allowsHitTesting(false)
 
             VStack(spacing: 0) {
                 HStack(alignment: .top) {
-                    // Greeting + name + member ID
                     VStack(alignment: .leading, spacing: 2) {
                         Text("JAY JINENDRA")
                             .font(JCAFont.label)
@@ -125,7 +104,6 @@ struct HomeView: View {
                         Text(currentUser?.name ?? "Manan Shah")
                             .font(.fraunces(size: 26, weight: .medium))
                             .foregroundStyle(Color.jcaInk)
-                        // Member ID pill — separate line below name
                         HStack(spacing: 4) {
                             Circle()
                                 .fill(Color.jcaGold)
@@ -141,7 +119,6 @@ struct HomeView: View {
                         .padding(.top, 2)
                     }
                     Spacer()
-                    // Avatar button → navigates to Profile tab
                     Button {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         appState.selectedTab = .profile
@@ -170,6 +147,72 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             .padding(.top, 8)
             .padding(.bottom, 16)
+        }
+    }
+
+    // MARK: - Quick Actions
+
+    @ViewBuilder
+    private var quickActionsSection: some View {
+        VStack(spacing: 12) {
+            SectionHeader(title: "Quick Actions")
+                .padding(.horizontal, 24)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    NavigationLink(destination: LiveDarshanView()) {
+                        QuickActionCard(title: "Live Darshan", subtitle: "Streaming now", icon: "video.fill")
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.selectedTab = .donate
+                    } label: {
+                        QuickActionCard(title: "Donate", subtitle: "Support the temple", icon: "heart.fill", isGold: true)
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.selectedTab = .calendar
+                    } label: {
+                        QuickActionCard(title: "Calendar", subtitle: "Upcoming events", icon: "calendar")
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.navigate(to: .gallery)
+                    } label: {
+                        QuickActionCard(title: "Gallery", subtitle: "Photos & videos", icon: "photo.stack.fill", isGold: true)
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.selectedTab = .community
+                    } label: {
+                        QuickActionCard(title: "Volunteer", subtitle: "Join seva", icon: "hands.sparkles.fill")
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        appState.selectedTab = .donate
+                    } label: {
+                        QuickActionCard(title: "Bhojanshala", subtitle: "Sponsor a meal", icon: "fork.knife")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink(destination: VirtualTourView()) {
+                        QuickActionCard(title: "Virtual Tour", subtitle: "Explore shrines", icon: "building.columns", isGold: true)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 8)
+            }
         }
     }
 }

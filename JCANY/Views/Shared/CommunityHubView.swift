@@ -1,99 +1,97 @@
 import SwiftUI
 
 struct CommunityHubView: View {
-    @State private var selectedSegment: CommunitySection = .pathshala
-
-    enum CommunitySection: String, CaseIterable {
-        case pathshala = "Pathshala"
-        case volunteer = "Volunteer"
-        case news      = "News"
-    }
+    private let items: [HubItem] = [
+        HubItem(title: "Gallery",      subtitle: "Photos & videos",   icon: "photo.stack.fill",         color: Color(hex: "#B45309"), route: .gallery),
+        HubItem(title: "Live Darshan", subtitle: "Watch live",         icon: "video.fill",               color: Color(hex: "#B91C1C"), route: .liveDarshan),
+        HubItem(title: "Virtual Tour", subtitle: "Explore the temple", icon: "building.columns.fill",    color: Color(hex: "#4338CA"), route: .virtualTour),
+        HubItem(title: "Pathshala",    subtitle: "Jain education",     icon: "book.closed.fill",         color: Color(hex: "#0F766E"), route: .pathshala),
+        HubItem(title: "Volunteer",    subtitle: "Seva opportunities",  icon: "hands.sparkles.fill",     color: Color(hex: "#C2410C"), route: .volunteer),
+        HubItem(title: "News",         subtitle: "Latest updates",     icon: "newspaper.fill",           color: Color(hex: "#374151"), route: .news),
+        HubItem(title: "Youth Connect", subtitle: "Coming soon",       icon: "figure.2.arms.open",       color: Color(hex: "#7C3AED"), route: .youthConnect),
+    ]
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Gallery quick-access card
-            NavigationLink(value: CommunityRoute.gallery) {
-                HStack(spacing: 14) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color.jcaGold.opacity(0.3), Color.jcaGoldLight.opacity(0.2)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .frame(width: 38, height: 38)
-                        Image(systemName: "photo.stack.fill")
-                            .font(.system(size: 17))
-                            .foregroundStyle(Color.jcaGoldDeep)
+        ScrollView {
+            LazyVGrid(
+                columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                spacing: 12
+            ) {
+                ForEach(items) { item in
+                    NavigationLink(value: item.route) {
+                        HubTile(item: item)
                     }
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Gallery")
-                            .font(JCAFont.title)
-                            .foregroundStyle(Color.jcaInk)
-                        Text("Photos, videos & 360° virtual tours")
-                            .font(JCAFont.caption)
-                            .foregroundStyle(Color.jcaMuted)
-                    }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.jcaMuted.opacity(0.4))
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: Radii.base)
-                        .fill(Color.jcaPaper)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Radii.base)
-                                .stroke(Color.jcaBorder, lineWidth: 0.5)
-                        )
-                        .shadowSm()
-                )
-                .padding(.horizontal, 24)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
-            }
-            .buttonStyle(.plain)
-
-            // Segment control
-            Picker("Community Section", selection: $selectedSegment) {
-                ForEach(CommunitySection.allCases, id: \.self) { section in
-                    Text(section.rawValue).tag(section)
+                    .buttonStyle(.plain)
                 }
             }
-            .pickerStyle(.segmented)
             .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .background(Color.jcaCream)
-
-            Divider().overlay(Color.jcaBorder)
-
-            // Content
-            Group {
-                switch selectedSegment {
-                case .pathshala:
-                    PathshalaView()
-                        .navigationBarHidden(true)
-                case .volunteer:
-                    VolunteerView()
-                        .navigationBarHidden(true)
-                case .news:
-                    NewsListView()
-                        .navigationBarHidden(true)
-                }
-            }
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
         .background(Color.jcaCream.ignoresSafeArea())
-        .navigationTitle("Community")
-        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - Hub Data Model
+
+private struct HubItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let icon: String
+    let color: Color
+    let route: CommunityRoute
+}
+
+// MARK: - Tile View
+
+private struct HubTile: View {
+    let item: HubItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                RoundedRectangle(cornerRadius: Radii.base)
+                    .fill(Color.jcaPaper)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.base)
+                            .stroke(Color.jcaBorder, lineWidth: 0.5)
+                    )
+                    .shadowSm()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(item.color.opacity(0.1))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: item.icon)
+                            .font(.system(size: 20, weight: .medium))
+                            .foregroundStyle(item.color)
+                    }
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(item.title)
+                            .font(JCAFont.title)
+                            .foregroundStyle(Color.jcaInk)
+                            .lineLimit(1)
+                        Text(item.subtitle)
+                            .font(JCAFont.caption)
+                            .foregroundStyle(Color.jcaMuted)
+                            .lineLimit(1)
+                    }
+                }
+                .padding(14)
+            }
+        }
+        .accessibilityLabel(item.title)
+        .accessibilityHint(item.subtitle)
     }
 }
 
 #Preview {
     NavigationStack {
         CommunityHubView()
+            .navigationTitle("Community")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }

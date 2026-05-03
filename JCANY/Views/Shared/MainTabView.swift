@@ -55,11 +55,23 @@ struct MainTabView: View {
 
                 // MARK: Community
                 NavigationStack(path: $bindableState.communityNavPath) {
-                    CommunityHubView()
+                    CommunityView()
                         .navigationDestination(for: CommunityRoute.self) { route in
                             switch route {
                             case .gallery:
                                 GalleryView()
+                            case .liveDarshan:
+                                LiveDarshanView()
+                            case .virtualTour:
+                                VirtualTourView()
+                            case .pathshala:
+                                PathshalaView()
+                            case .volunteer:
+                                VolunteerView()
+                            case .news:
+                                NewsListView()
+                            case .youthConnect:
+                                ComingSoonView(title: "Youth Connect", icon: "figure.2.arms.open")
                             }
                         }
                 }
@@ -73,7 +85,7 @@ struct MainTabView: View {
                     ProfileView()
                 }
                 .tabItem {
-                    Label("Profile", systemImage: appState.selectedTab == .profile ? "person.fill" : "person")
+                    Label("Profile", systemImage: appState.selectedTab == .profile ? "person.crop.circle.fill" : "person.crop.circle")
                 }
                 .tag(AppTab.profile)
             }

@@ -11,6 +11,12 @@ enum HomeRoute: Hashable {
 
 enum CommunityRoute: Hashable {
     case gallery
+    case liveDarshan
+    case virtualTour
+    case pathshala
+    case volunteer
+    case news
+    case youthConnect
 }
 
 @Observable
@@ -38,13 +44,17 @@ final class AppState {
             homeNavPath.append(HomeRoute.liveDarshan)
 
         case .donationReceipt:
-            selectedTab = .profile
+            selectedTab = .donate
 
         case .volunteerList:
             selectedTab = .community
+            if communityNavPath.count > 0 { communityNavPath.removeLast(communityNavPath.count) }
+            communityNavPath.append(CommunityRoute.volunteer)
 
         case .pathshalaLesson:
             selectedTab = .community
+            if communityNavPath.count > 0 { communityNavPath.removeLast(communityNavPath.count) }
+            communityNavPath.append(CommunityRoute.pathshala)
 
         case .gallery:
             selectedTab = .community

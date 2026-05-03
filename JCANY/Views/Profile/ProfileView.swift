@@ -3,143 +3,62 @@ import SwiftData
 
 struct ProfileView: View {
     @Query private var users: [User]
-    @State private var viewModel = ProfileViewModel()
-    @State private var editingMember: FamilyMember? = nil
-    @State private var showingAddSheet: Bool = false
     @Environment(AuthService.self) private var auth
+
+    @AppStorage("jca.notif.parva")      private var notifParva       = true
+    @AppStorage("jca.notif.aarti")      private var notifAarti       = true
+    @AppStorage("jca.notif.birthday")   private var notifBirthday    = false
+    @AppStorage("jca.notif.pathshala")  private var notifPathshala   = true
+    @AppStorage("jca.notif.newsletter") private var notifNewsletter  = true
 
     var currentUser: User? { users.first }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Header
                 profileHeader
                     .padding(.bottom, 20)
 
-                // Stats
                 if let user = currentUser {
                     statsRow(user: user)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 24)
                 }
 
-                // Family Members
-                VStack(spacing: 0) {
-                    HStack {
-                        Text("Family Members")
-                            .font(JCAFont.headline)
-                            .foregroundStyle(Color.jcaInk)
-                        Spacer()
-                        Button {
-                            showingAddSheet = true
-                        } label: {
-                            Label("Add", systemImage: "plus.circle.fill")
-                                .font(JCAFont.subheadline)
-                                .foregroundStyle(Color.jcaCrimson)
-                        }
-                        .accessibilityLabel("Add family member")
-                    }
+                membershipCard
                     .padding(.horizontal, 24)
-                    .padding(.bottom, 12)
+                    .padding(.bottom, 24)
 
-                    if let user = currentUser, !user.familyMembers.isEmpty {
-                        VStack(spacing: 0) {
-                            ForEach(user.familyMembers) { member in
-                                FamilyMemberRow(member: member) {
-                                    editingMember = member
-                                }
-                                if member.id != user.familyMembers.last?.id {
-                                    Divider()
-                                        .overlay(Color.jcaBorder)
-                                        .padding(.horizontal, 16)
-                                }
-                            }
-                        }
-                        .background(
-                            RoundedRectangle(cornerRadius: Radii.base)
-                                .fill(Color.jcaPaper)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: Radii.base)
-                                        .stroke(Color.jcaBorder, lineWidth: 0.5)
-                                )
-                                .shadowSm()
-                        )
-                        .padding(.horizontal, 24)
-                    } else {
-                        Text("No family members added yet.")
-                            .font(JCAFont.body)
-                            .foregroundStyle(Color.jcaMuted)
-                            .padding(.horizontal, 24)
-                    }
-                }
-                .padding(.bottom, 28)
+                accountSection
+                    .padding(.bottom, 24)
 
-                // Account Settings
-                VStack(spacing: 0) {
-                    Text("Account")
-                        .font(JCAFont.headline)
-                        .foregroundStyle(Color.jcaInk)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
+                notificationsSection
+                    .padding(.bottom, 24)
 
-                    VStack(spacing: 0) {
-                        NavigationLink(destination: DonationHistoryView()) {
-                            SettingsRow(icon: "receipt.fill", title: "Donation Receipts", tint: .jcaCrimson)
-                        }
-                        Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        NavigationLink(destination: PaymentMethodsView()) {
-                            SettingsRow(icon: "creditcard.fill", title: "Payment Methods", tint: Color.jcaGoldDeep)
-                        }
-                        Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        NavigationLink(destination: NotificationDemoView()) {
-                            SettingsRow(icon: "bell.badge.fill", title: "Notification Playground", tint: .blue)
-                        }
-                        Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        Button {
-                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                        } label: {
-                            SettingsRow(icon: "questionmark.circle.fill", title: "Help & Support", tint: .jcaMuted)
-                        }
-                        .buttonStyle(.plain)
-                        Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
-                        Button {
-                            auth.signOut()
-                        } label: {
-                            SettingsRow(icon: "rectangle.portrait.and.arrow.right.fill", title: "Sign Out", tint: .jcaCrimson, isDestructive: true)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .background(
-                        RoundedRectangle(cornerRadius: Radii.base)
-                            .fill(Color.jcaPaper)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Radii.base)
-                                    .stroke(Color.jcaBorder, lineWidth: 0.5)
-                            )
-                            .shadowSm()
-                    )
-                    .padding(.horizontal, 24)
-                }
-                .padding(.bottom, 40)
+                supportSection
+                    .padding(.bottom, 40)
             }
         }
         .background(Color.jcaCream.ignoresSafeArea())
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showingAddSheet) {
-            AddEditFamilyMemberSheet(user: currentUser)
-        }
-        .sheet(item: $editingMember) { member in
-            AddEditFamilyMemberSheet(editingMember: member, user: currentUser)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: MoreGridView()) {
+                    Image(systemName: "square.grid.2x2")
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.jcaInk)
+                        .accessibilityLabel("Explore More")
+                }
+            }
         }
     }
+
+    // MARK: - Header
 
     @ViewBuilder
     private var profileHeader: some View {
         ZStack(alignment: .bottom) {
-            // Crimson gradient header
             LinearGradient(
                 colors: [Color.jcaCrimson, Color.jcaCrimsonDeep],
                 startPoint: .topLeading,
@@ -159,7 +78,6 @@ struct ProfileView: View {
                 }
             )
 
-            // Avatar
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
@@ -195,23 +113,16 @@ struct ProfileView: View {
         .accessibilityLabel("Profile of \(currentUser?.name ?? "Manan Shah"), \(currentUser?.memberTier ?? "Life Member"), ID \(currentUser?.memberID ?? "04812")")
     }
 
+    // MARK: - Stats
+
     @ViewBuilder
     private func statsRow(user: User) -> some View {
         HStack(spacing: 0) {
-            ProfileStat(
-                value: formatCurrency(user.totalDonated),
-                label: "Donated"
-            )
+            ProfileStat(value: formatCurrency(user.totalDonated), label: "Donated")
             Divider().frame(height: 40).overlay(Color.jcaBorder)
-            ProfileStat(
-                value: "\(user.sevaHours)",
-                label: "Seva Hrs"
-            )
+            ProfileStat(value: "\(user.sevaHours)", label: "Seva Hrs")
             Divider().frame(height: 40).overlay(Color.jcaBorder)
-            ProfileStat(
-                value: "\(user.familyMembers.count)",
-                label: "Family"
-            )
+            ProfileStat(value: "\(user.familyMembers.count)", label: "Family")
         }
         .padding(.vertical, 16)
         .background(
@@ -225,6 +136,197 @@ struct ProfileView: View {
         )
     }
 
+    // MARK: - Membership Card
+
+    @ViewBuilder
+    private var membershipCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Patron Sustaining")
+                        .font(.fraunces(size: 18, weight: .semibold))
+                        .foregroundStyle(Color.jcaInk)
+                    Text("Member since 2009  ·  Renews Dec 31, 2026")
+                        .font(JCAFont.caption)
+                        .foregroundStyle(Color.jcaMuted)
+                }
+                Spacer()
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.jcaGold.opacity(0.12))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "rosette")
+                        .font(.system(size: 18))
+                        .foregroundStyle(Color.jcaGoldDeep)
+                }
+            }
+
+            Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            } label: {
+                Text("Manage Membership")
+                    .font(JCAFont.subheadline)
+                    .foregroundStyle(Color.jcaCrimson)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Manage membership")
+        }
+        .padding(16)
+        .background(Color.jcaPaper)
+        .clipShape(RoundedRectangle(cornerRadius: Radii.base))
+        .overlay(
+            RoundedRectangle(cornerRadius: Radii.base)
+                .stroke(Color.jcaBorder, lineWidth: 0.5)
+        )
+        .shadowSm()
+    }
+
+    // MARK: - Account Section
+
+    @ViewBuilder
+    private var accountSection: some View {
+        VStack(spacing: 0) {
+            Text("Account")
+                .font(JCAFont.headline)
+                .foregroundStyle(Color.jcaInk)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 12)
+
+            VStack(spacing: 0) {
+                NavigationLink(destination: FamilyDuesView()) {
+                    SettingsRow(icon: "person.2.fill", title: "Family Profile", tint: Color.jcaGoldDeep)
+                }
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NavigationLink(
+                    destination: DonationHistoryView()
+                        .navigationTitle("Donation History")
+                        .navigationBarTitleDisplayMode(.inline)
+                ) {
+                    SettingsRow(icon: "receipt.fill", title: "Donation History", tint: .jcaCrimson)
+                }
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NavigationLink(destination: PaymentMethodsView()) {
+                    SettingsRow(icon: "creditcard.fill", title: "Payment Methods", tint: Color.jcaGoldDeep)
+                }
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NavigationLink(destination: SubscriptionsView()) {
+                    SettingsRow(icon: "arrow.clockwise.circle.fill", title: "Recurring Subscriptions", tint: Color(hex: "#0F766E"))
+                }
+            }
+            .background(
+                RoundedRectangle(cornerRadius: Radii.base)
+                    .fill(Color.jcaPaper)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.base)
+                            .stroke(Color.jcaBorder, lineWidth: 0.5)
+                    )
+                    .shadowSm()
+            )
+            .padding(.horizontal, 24)
+        }
+    }
+
+    // MARK: - Notifications Section
+
+    @ViewBuilder
+    private var notificationsSection: some View {
+        VStack(spacing: 0) {
+            Text("Notifications")
+                .font(JCAFont.headline)
+                .foregroundStyle(Color.jcaInk)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 12)
+
+            VStack(spacing: 0) {
+                NotifToggleRow(
+                    icon: "sun.max.fill", tint: Color.jcaGoldDeep,
+                    title: "Parva Days & Festivals",
+                    isOn: $notifParva
+                )
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NotifToggleRow(
+                    icon: "bell.fill", tint: Color.jcaCrimson,
+                    title: "Daily Aarti Reminder",
+                    isOn: $notifAarti
+                )
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NotifToggleRow(
+                    icon: "gift.fill", tint: Color(hex: "#9333EA"),
+                    title: "Birthday & Anniversary",
+                    isOn: $notifBirthday
+                )
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NotifToggleRow(
+                    icon: "book.fill", tint: Color(hex: "#0F766E"),
+                    title: "Pathshala Class Reminders",
+                    isOn: $notifPathshala
+                )
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NotifToggleRow(
+                    icon: "envelope.fill", tint: Color(hex: "#0369A1"),
+                    title: "Weekly Newsletter",
+                    isOn: $notifNewsletter
+                )
+            }
+            .background(
+                RoundedRectangle(cornerRadius: Radii.base)
+                    .fill(Color.jcaPaper)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.base)
+                            .stroke(Color.jcaBorder, lineWidth: 0.5)
+                    )
+                    .shadowSm()
+            )
+            .padding(.horizontal, 24)
+        }
+    }
+
+    // MARK: - Support Section
+
+    @ViewBuilder
+    private var supportSection: some View {
+        VStack(spacing: 0) {
+            Text("Support")
+                .font(JCAFont.headline)
+                .foregroundStyle(Color.jcaInk)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 12)
+
+            VStack(spacing: 0) {
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                } label: {
+                    SettingsRow(icon: "questionmark.circle.fill", title: "Help & Support", tint: .jcaMuted)
+                }
+                .buttonStyle(.plain)
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                NavigationLink(destination: ComingSoonView(title: "About JCA", icon: "building.columns.fill")) {
+                    SettingsRow(icon: "info.circle.fill", title: "About JCA", tint: Color(hex: "#0369A1"))
+                }
+                Divider().overlay(Color.jcaBorder).padding(.horizontal, 16)
+                Button {
+                    auth.signOut()
+                } label: {
+                    SettingsRow(icon: "rectangle.portrait.and.arrow.right.fill", title: "Sign Out", tint: .jcaCrimson, isDestructive: true)
+                }
+                .buttonStyle(.plain)
+            }
+            .background(
+                RoundedRectangle(cornerRadius: Radii.base)
+                    .fill(Color.jcaPaper)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radii.base)
+                            .stroke(Color.jcaBorder, lineWidth: 0.5)
+                    )
+                    .shadowSm()
+            )
+            .padding(.horizontal, 24)
+        }
+    }
+
     private func formatCurrency(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -233,6 +335,41 @@ struct ProfileView: View {
         return formatter.string(from: NSDecimalNumber(decimal: amount)) ?? "$\(amount)"
     }
 }
+
+// MARK: - Notification Toggle Row
+
+private struct NotifToggleRow: View {
+    let icon: String
+    let tint: Color
+    let title: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        HStack(spacing: 14) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(tint.opacity(0.1))
+                    .frame(width: 36, height: 36)
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(tint)
+            }
+            Text(title)
+                .font(JCAFont.body)
+                .foregroundStyle(Color.jcaInk)
+            Spacer()
+            Toggle("", isOn: $isOn)
+                .tint(Color.jcaCrimson)
+                .labelsHidden()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .accessibilityLabel(title)
+        .accessibilityValue(isOn ? "On" : "Off")
+    }
+}
+
+// MARK: - Profile Stat
 
 private struct ProfileStat: View {
     let value: String
@@ -252,6 +389,8 @@ private struct ProfileStat: View {
         .accessibilityLabel("\(label): \(value)")
     }
 }
+
+// MARK: - Settings Row
 
 struct SettingsRow: View {
     let icon: String
@@ -285,44 +424,7 @@ struct SettingsRow: View {
     }
 }
 
-struct DonationHistoryView: View {
-    @Query private var users: [User]
-
-    var donations: [Donation] {
-        users.first?.donationHistory.sorted(by: { $0.date > $1.date }) ?? []
-    }
-
-    var body: some View {
-        List {
-            ForEach(donations) { donation in
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(donation.cause)
-                            .font(JCAFont.title)
-                            .foregroundStyle(Color.jcaInk)
-                        Text(donation.date.formatted(.dateTime.day().month(.abbreviated).year()))
-                            .font(JCAFont.caption)
-                            .foregroundStyle(Color.jcaMuted)
-                    }
-                    Spacer()
-                    Text(formatCurrency(donation.amount))
-                        .font(.fraunces(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.jcaCrimson)
-                }
-                .padding(.vertical, 4)
-            }
-        }
-        .navigationTitle("Donation Receipts")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter.string(from: NSDecimalNumber(decimal: amount)) ?? "$\(amount)"
-    }
-}
+// MARK: - Payment Methods View
 
 struct PaymentMethodsView: View {
     @Query private var users: [User]

@@ -17,7 +17,8 @@ struct JCANYApp: App {
             User.self,
             FamilyMember.self,
             PaymentMethod.self,
-            Donation.self
+            Donation.self,
+            BookProgress.self,
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

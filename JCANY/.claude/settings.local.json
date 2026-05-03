@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sunil\\\\projects\\\\jca\\\\jnc-app\\\\JCANY\" -Recurse -File -Filter \"*.swift\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\sunil\\\\projects\\\\jca\\\\jnc-app\\\\JCANY\" -Recurse -File | Where-Object {$_.Name -match \"MIGRATION|README|Info\\\\.plist\"} | Select-Object -ExpandProperty FullName)",
+      "Bash(git -C \"C:/Users/sunil/projects/jca/jnc-app\" status --short)"
+    ]
+  }
+}

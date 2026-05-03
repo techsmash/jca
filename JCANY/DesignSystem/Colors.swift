@@ -15,7 +15,7 @@ extension Color {
     static let jcaMuted        = Color(hex: "#8a7864")
     static let jcaBorder       = Color(hex: "#1c1410").opacity(0.08)
     static let jcaBorderWarm   = Color(hex: "#a8202c").opacity(0.12)
-    static let jcaDark         = Color(hex: "#08040a")
+    static let jcaSacredDark    = Color(hex: "#08040a")
 
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

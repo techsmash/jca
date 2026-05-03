@@ -342,7 +342,6 @@ struct MockDataProvider {
         var cal = Calendar.current
         var dates: [Date] = []
         var date = Date()
-        // Find next 6 Sundays
         for _ in 0..<6 {
             let weekday = cal.component(.weekday, from: date)
             let daysUntilSunday = (8 - weekday) % 7
@@ -350,5 +349,242 @@ struct MockDataProvider {
             dates.append(date)
         }
         return dates
+    }
+
+    // MARK: - Community Feed
+
+    static var communityPosts: [CommunityPost] {
+        func date(daysAgo: Int) -> Date {
+            Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
+        }
+        return [
+            CommunityPost(
+                authorInitials: "JC",
+                authorName: "JCA New York",
+                kind: .admin,
+                body: "Reminder: Paryushan Parva begins Saturday, August 16. All programs and schedules are posted on the Calendar tab. The temple will have extended hours throughout the festival. Jai Jinendra 🙏",
+                reactions: .init(lotus: 142, namaste: 88, comments: 14),
+                createdAt: date(daysAgo: 0),
+                status: .approved,
+                isPinned: true
+            ),
+            CommunityPost(
+                authorInitials: "PS",
+                authorName: "Priya Shah",
+                kind: .member,
+                body: "Beautiful Snatra Puja ceremony this morning — so grateful to be part of this sangha. Anumodana to all who participated and to the sevaks who organized everything 🪷",
+                reactions: .init(lotus: 67, namaste: 31, comments: 8),
+                createdAt: date(daysAgo: 0),
+                status: .approved,
+                isPinned: false
+            ),
+            CommunityPost(
+                authorInitials: "JC",
+                authorName: "JCA New York",
+                kind: .admin,
+                body: "📸 New photos from last Sunday's Mahavir Janma Kalyanak celebration are now available in the Gallery. Thank you to everyone who joined us for this joyous occasion!",
+                reactions: .init(lotus: 203, namaste: 112, comments: 24),
+                createdAt: date(daysAgo: 2),
+                status: .approved,
+                isPinned: false
+            ),
+            CommunityPost(
+                authorInitials: "RJ",
+                authorName: "Rahul Jain",
+                kind: .youth,
+                body: "Just completed my Pathshala advanced level certification! So proud of our entire class. Shoutout to all our amazing teachers who made this possible 🙏",
+                reactions: .init(lotus: 89, namaste: 45, comments: 17),
+                createdAt: date(daysAgo: 3),
+                status: .approved,
+                isPinned: false
+            ),
+            CommunityPost(
+                authorInitials: "AM",
+                authorName: "Alpa Mehta",
+                kind: .member,
+                body: "Wonderful lecture by Muni Shri last evening. His words on Aparigraha and modern life truly resonated. Looking forward to tomorrow's session!",
+                reactions: .init(lotus: 54, namaste: 29, comments: 6),
+                createdAt: date(daysAgo: 4),
+                status: .approved,
+                isPinned: false
+            ),
+        ]
+    }
+
+    // MARK: - Subscriptions
+
+    static var subscriptions: [Subscription] {
+        func date(year: Int, month: Int, day: Int) -> Date {
+            var c = DateComponents(); c.year = year; c.month = month; c.day = day
+            return Calendar.current.date(from: c) ?? Date()
+        }
+        return [
+            Subscription(
+                causeName: "Daily Aarti Seva",
+                causeIcon: "bell.fill",
+                frequency: .daily,
+                amount: 11,
+                startDate: date(year: 2025, month: 9, day: 1),
+                nextChargeDate: date(year: 2026, month: 5, day: 3),
+                lifetimeTotal: 2783,
+                status: .active
+            ),
+            Subscription(
+                causeName: "Bhojanshala Family Seva",
+                causeIcon: "fork.knife",
+                frequency: .monthly,
+                amount: 108,
+                startDate: date(year: 2024, month: 3, day: 15),
+                nextChargeDate: date(year: 2026, month: 5, day: 15),
+                lifetimeTotal: 2916,
+                status: .active
+            ),
+        ]
+    }
+
+    // MARK: - Sponsors of the Month
+
+    static var sponsorsOfMonth: [MonthSponsor] {
+        func date(year: Int, month: Int, day: Int) -> Date {
+            var c = DateComponents(); c.year = year; c.month = month; c.day = day
+            return Calendar.current.date(from: c) ?? Date()
+        }
+        return [
+            MonthSponsor(
+                memberInitials: "RS",
+                memberName: "Ramesh & Sunita Shah",
+                cause: "Bhojanshala",
+                amount: 1251,
+                date: date(year: 2026, month: 4, day: 27),
+                memorialText: "In loving memory of Late Shri Kantilal Shah"
+            ),
+            MonthSponsor(
+                memberInitials: "PJ",
+                memberName: "Priya & Nitin Jain",
+                cause: "Bhojanshala",
+                amount: 351,
+                date: date(year: 2026, month: 4, day: 20),
+                memorialText: nil
+            ),
+            MonthSponsor(
+                memberInitials: "AM",
+                memberName: "Alpa Mehta",
+                cause: "General Fund",
+                amount: 501,
+                date: date(year: 2026, month: 4, day: 18),
+                memorialText: "In honor of Alpa's 50th birthday"
+            ),
+            MonthSponsor(
+                memberInitials: "DG",
+                memberName: "Deepak & Kavita Gala",
+                cause: "Bhojanshala",
+                amount: 1251,
+                date: date(year: 2026, month: 4, day: 13),
+                memorialText: nil
+            ),
+            MonthSponsor(
+                memberInitials: "SV",
+                memberName: "Suresh Vora Family",
+                cause: "Temple Fund",
+                amount: 251,
+                date: date(year: 2026, month: 4, day: 6),
+                memorialText: "Anumodana on Mahavir Jayanti"
+            ),
+        ]
+    }
+
+    // MARK: - Jinvani Library
+
+    static var books: [Book] {
+        [
+            Book(id: "tattvartha", title: "Tattvārtha Sūtra", author: "Umāsvāti", category: .agamSutras,
+                 format: .pdf, language: "Sanskrit / English", totalPages: 312,
+                 gradientColors: ["#B45309", "#D97706"]),
+            Book(id: "acaranga", title: "Ācārānga Sūtra", author: "Sudharmasvāmī", category: .agamSutras,
+                 format: .pdf, language: "Prakrit / English", totalPages: 248,
+                 gradientColors: ["#0F766E", "#14B8A6"]),
+            Book(id: "kalpa", title: "Kalpa Sūtra", author: "Bhadrabāhu", category: .agamSutras,
+                 format: .illustrated, language: "Prakrit / English", totalPages: 180,
+                 gradientColors: ["#B91C1C", "#DC2626"]),
+            Book(id: "jain-phil", title: "Jain Philosophy & Religion", author: "Muni Mahendra Kumar", category: .commentaries,
+                 format: .pdf, language: "English", totalPages: 420,
+                 gradientColors: ["#4338CA", "#6366F1"]),
+            Book(id: "anekanta", title: "Anekānta: The Third Eye", author: "Osho", category: .commentaries,
+                 format: .pdf, language: "English", totalPages: 156,
+                 gradientColors: ["#6D28D9", "#7C3AED"]),
+            Book(id: "jain-stories", title: "Stories of the Tīrthankaras", author: "JCA Education Board", category: .children,
+                 format: .illustrated, language: "English", totalPages: 96,
+                 gradientColors: ["#0369A1", "#0EA5E9"]),
+            Book(id: "little-jain", title: "Little Jain's ABC of Ahimsā", author: "Smita Mehta", category: .children,
+                 format: .illustrated, language: "English", totalPages: 64,
+                 gradientColors: ["#047857", "#10B981"]),
+        ]
+    }
+
+    // MARK: - Business Directory
+
+    static var businesses: [Business] {
+        [
+            Business(name: "Shah Diamonds & Jewelry", category: .jewelry, location: "Midtown Manhattan, NY",
+                     phone: "+12125550101", website: "https://example.com", rating: 4.8, hasSanghaDiscount: true, hasMemberRate: false),
+            Business(name: "Jain Legal Group", category: .legal, location: "Downtown Brooklyn, NY",
+                     phone: "+17185550102", website: "https://example.com", rating: 4.6, hasSanghaDiscount: false, hasMemberRate: true),
+            Business(name: "Ahimsa Family Medicine", category: .medical, location: "Jackson Heights, NY",
+                     phone: "+17185550103", website: "https://example.com", rating: 4.9, hasSanghaDiscount: true, hasMemberRate: false),
+            Business(name: "Mehta Financial Services", category: .finance, location: "Flushing, NY",
+                     phone: "+17185550104", website: nil, rating: 4.5, hasSanghaDiscount: false, hasMemberRate: true),
+            Business(name: "Pure Bhojan Kitchen", category: .food, location: "Elmhurst, NY",
+                     phone: "+17185550105", website: "https://example.com", rating: 4.7, hasSanghaDiscount: true, hasMemberRate: false),
+            Business(name: "Gala Hospitality Group", category: .hospitality, location: "Woodside, NY",
+                     phone: "+17185550106", website: "https://example.com", rating: 4.4, hasSanghaDiscount: false, hasMemberRate: false),
+        ]
+    }
+
+    // MARK: - Facilities
+
+    static var facilities: [Facility] {
+        [
+            Facility(name: "Main Hall", capacity: 450, memberRate: 2508, publicRate: 4180,
+                     description: "Grand hall with full A/V, stage, and pure-veg catering kitchen", iconName: "building.2.fill"),
+            Facility(name: "Upashray Hall", capacity: 120, memberRate: 751, publicRate: 1251,
+                     description: "Intimate hall ideal for satsangs, bhajans, and small celebrations", iconName: "person.3.fill"),
+            Facility(name: "Marble Lobby", capacity: 80, memberRate: 351, publicRate: 585,
+                     description: "Elegant lobby with marble floors for receptions and exhibitions", iconName: "sparkles"),
+        ]
+    }
+
+    // MARK: - Jain Centers USA
+
+    static var jainCenters: [JainCenter] {
+        [
+            JainCenter(name: "Jain Center of America (NY)", address: "43-11 Ithaca St",
+                       city: "Elmhurst", state: "NY", latitude: 40.7380, longitude: -73.8826,
+                       hours: "Mon–Fri 5–9 PM · Sat–Sun 8 AM–9 PM"),
+            JainCenter(name: "Jain Center of Greater Boston", address: "171 Old Harvard Rd",
+                       city: "Boxborough", state: "MA", latitude: 42.4868, longitude: -71.5236,
+                       hours: "Sat–Sun 9 AM–8 PM"),
+            JainCenter(name: "Jain Society of Metropolitan Chicago", address: "435 N Route 53",
+                       city: "Bartlett", state: "IL", latitude: 41.9883, longitude: -88.1851,
+                       hours: "Fri–Sun 9 AM–9 PM"),
+            JainCenter(name: "Jain Center of Southern California", address: "8072 Commonwealth Ave",
+                       city: "Buena Park", state: "CA", latitude: 33.8676, longitude: -117.9718,
+                       hours: "Daily 9 AM–8 PM"),
+            JainCenter(name: "Jain Society of Houston", address: "1700 W Sam Houston Pkwy S",
+                       city: "Houston", state: "TX", latitude: 29.7441, longitude: -95.5582,
+                       hours: "Sat–Sun 9 AM–7 PM"),
+        ]
+    }
+
+    static var vegRestaurants: [VegRestaurant] {
+        [
+            VegRestaurant(name: "Desi Village", address: "74-10 37th Ave", city: "Jackson Heights, NY",
+                          kind: .pureVeg, rating: 4.6, latitude: 40.7453, longitude: -73.8907),
+            VegRestaurant(name: "Bhojan Pure Veg", address: "45-63 Kissena Blvd", city: "Flushing, NY",
+                          kind: .pureVeg, rating: 4.8, latitude: 40.7571, longitude: -73.8304),
+            VegRestaurant(name: "Saraswati Bhavan", address: "76-01 Roosevelt Ave", city: "Jackson Heights, NY",
+                          kind: .jainFriendly, rating: 4.4, latitude: 40.7459, longitude: -73.8901),
+            VegRestaurant(name: "Annapurna Indian Cuisine", address: "87-10 Parsons Blvd", city: "Jamaica, NY",
+                          kind: .jainFriendly, rating: 4.3, latitude: 40.7099, longitude: -73.7977),
+        ]
     }
 }
